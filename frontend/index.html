@@ -8,23 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .modal-backdrop {
-            background-color: rgba(0,0,0,0.5);
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            transition: transform 0.3s ease;
-        }
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fade-in 0.3s ease-out forwards;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .modal-backdrop { background-color: rgba(0,0,0,0.5); }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -32,7 +19,7 @@
     <!-- Tela de Autenticação -->
     <div id="auth-view" class="flex items-center justify-center min-h-screen">
         <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-            <!-- Formulário de Login (inicialmente visível) -->
+            <!-- Formulário de Login -->
             <form id="login-form">
                 <h2 class="text-2xl font-bold text-center text-gray-700">Login</h2>
                 <div id="login-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
@@ -47,25 +34,17 @@
                     </div>
                 </div>
                 <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Entrar</button>
-                <p id="register-link-container" class="mt-4 text-sm text-center text-gray-600">
+                <p class="mt-4 text-sm text-center text-gray-600">
                     Não tem uma conta? <a href="#" id="show-register" class="font-medium text-blue-600 hover:underline">Cadastre-se</a>
                 </p>
             </form>
-
-            <!-- Formulário de Cadastro (inicialmente oculto) -->
+            <!-- Formulário de Cadastro -->
             <form id="register-form" class="hidden">
                  <h2 class="text-2xl font-bold text-center text-gray-700">Cadastro</h2>
-                 <p class="text-sm text-center text-gray-500 mt-2">Crie sua conta para acessar.</p>
                 <div id="register-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
                 <div class="mt-4 space-y-4">
-                    <div>
-                        <label for="register-email" class="block text-sm font-medium text-gray-600">Email</label>
-                        <input type="email" id="register-email" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    <div>
-                        <label for="register-password" class="block text-sm font-medium text-gray-600">Senha</label>
-                        <input type="password" id="register-password" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
+                    <input type="email" id="register-email" placeholder="Email" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
                 </div>
                 <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Cadastrar</button>
                 <p class="mt-4 text-sm text-center text-gray-600">
@@ -75,7 +54,7 @@
         </div>
     </div>
 
-    <!-- Tela Principal da Aplicação (inicialmente oculta) -->
+    <!-- Tela Principal da Aplicação -->
     <div id="app-view" class="hidden">
         <div class="container mx-auto p-4 sm:p-6 lg:p-8">
             <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
@@ -98,481 +77,177 @@
                 </div>
             </header>
 
-            <div class="mb-8 bg-white p-4 rounded-lg shadow">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-1">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
-                            </div>
-                            <input type="text" id="search-input" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Buscar por título ou parte...">
-                        </div>
-                    </div>
-                    <div>
-                        <select id="filter-process-status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="all">Todos os Status</option>
-                            <option value="Minuta">Minuta</option>
-                            <option value="Aguardando assinaturas">Aguardando assinaturas</option>
-                            <option value="Ativo">Ativo</option>
-                            <option value="Concluído">Concluído</option>
-                            <option value="Cancelado">Cancelado</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <main id="contract-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></main>
-            <div id="loading-message" class="text-center py-10">
-                <p class="text-gray-500 text-lg">Carregando...</p>
-            </div>
+            <main>
+                <!-- Filtros e Grade de Contratos aqui -->
+            </main>
         </div>
     </div>
     
-    <!-- Modal para Contrato -->
-    <div id="contract-modal" class="fixed inset-0 z-40 items-center justify-center hidden modal-backdrop">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg mx-4 p-6 relative animate-fade-in modal-content">
-            <h2 id="modal-title" class="text-2xl font-bold mb-6 text-gray-700">Adicionar Novo Contrato</h2>
-            <form id="contract-form">
-                <input type="hidden" id="contract-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="md:col-span-2">
-                        <label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label>
-                        <input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                     <div class="md:col-span-2">
-                        <label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label>
-                        <select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                            <option value="Minuta">Minuta</option>
-                            <option value="Aguardando assinaturas">Aguardando assinaturas</option>
-                            <option value="Ativo">Ativo</option>
-                            <option value="Concluído">Concluído</option>
-                            <option value="Cancelado">Cancelado</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="party" class="block text-sm font-medium text-gray-600 mb-1">Parte Contratada</label>
-                        <input type="text" id="party" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    <div>
-                        <label for="value" class="block text-sm font-medium text-gray-600 mb-1">Valor (R$)</label>
-                        <input type="number" step="0.01" id="value" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    <div>
-                        <label for="start-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Início</label>
-                        <input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    <div>
-                        <label for="end-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Término</label>
-                        <input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="observations" class="block text-sm font-medium text-gray-600 mb-1">Observações</label>
-                        <textarea id="observations" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: Falta assinatura do diretor financeiro..."></textarea>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="document-file" class="block text-sm font-medium text-gray-600 mb-1">Anexar Documento (PDF)</label>
-                        <input type="file" id="document-file" accept=".pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        <p id="current-file" class="text-xs text-gray-500 mt-1"></p>
+    <!-- Modal do Painel Admin -->
+    <div id="admin-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl mx-4 p-6 relative animate-fade-in">
+            <h2 class="text-2xl font-bold mb-6 text-gray-700">Painel de Administração</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Seção de Listar Usuários -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Usuários Cadastrados</h3>
+                    <div id="user-list-container" class="h-96 overflow-y-auto border rounded-lg p-2">
+                        <!-- A lista de usuários será inserida aqui -->
                     </div>
                 </div>
-                <div class="flex justify-end space-x-4 mt-8">
-                    <button type="button" id="cancel-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Cancelar</button>
-                    <button type="submit" id="save-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center justify-center">
-                        <span id="save-btn-text">Salvar</span>
-                        <i id="save-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
-                    </button>
+                <!-- Seção de Criar Novo Usuário -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Criar Novo Usuário</h3>
+                    <form id="create-user-form" class="space-y-4">
+                        <div id="create-user-feedback" class="hidden p-3 text-sm rounded-lg"></div>
+                        <div>
+                            <label for="new-user-email" class="block text-sm font-medium text-gray-600">Email</label>
+                            <input type="email" id="new-user-email" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md" required>
+                        </div>
+                        <div>
+                            <label for="new-user-password" class="block text-sm font-medium text-gray-600">Senha Provisória</label>
+                            <input type="password" id="new-user-password" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md" required>
+                        </div>
+                        <div>
+                            <label for="new-user-role" class="block text-sm font-medium text-gray-600">Papel</label>
+                            <select id="new-user-role" class="w-full bg-white px-3 py-2 mt-1 border border-gray-300 rounded-md">
+                                <option value="user">Usuário</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full px-4 py-2 mt-4 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Criar Usuário</button>
+                    </form>
                 </div>
-            </form>
-            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            </div>
+            <button id="close-admin-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <i class="fas fa-times fa-lg"></i>
             </button>
         </div>
     </div>
     
-    <div id="alert-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm mx-4 p-6 relative animate-fade-in modal-content">
-            <h3 id="alert-title" class="text-lg font-bold text-gray-800 mb-4"></h3>
-            <p id="alert-message" class="text-gray-600 mb-6"></p>
-            <div id="alert-buttons" class="flex justify-end space-x-4"></div>
-        </div>
-    </div>
+    <!-- Outros Modais (Contrato, Alerta) -->
 
-    <!-- Módulo Firebase -->
     <script type="module">
-        // Importações do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+        import { getFirestore, collection, onSnapshot, doc, getDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
+        // ... outras importações
 
-        // --- Elementos do DOM ---
-        const authView = document.getElementById('auth-view');
-        const appView = document.getElementById('app-view');
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const addContractBtn = document.getElementById('addContractBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const contractGrid = document.getElementById('contract-grid');
-        const loadingMessage = document.getElementById('loading-message');
-        const searchInput = document.getElementById('search-input');
-        const filterProcessStatus = document.getElementById('filter-process-status');
-        const contractModal = document.getElementById('contract-modal');
-        const alertModal = document.getElementById('alert-modal');
-        const registerLinkContainer = document.getElementById('register-link-container');
-        const adminPanelBtn = document.getElementById('admin-panel-btn');
-
-        // --- Variáveis Globais ---
-        let db, auth, storage;
-        let userId, userEmail, userRole;
-        let allContracts = [];
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-contract-app';
-        let unsubscribeFromContracts; 
-
-        const PROCESS_STATUS_STYLES = {
-            'Minuta': { color: 'gray', icon: 'fa-pencil-alt' },
-            'Aguardando assinaturas': { color: 'orange', icon: 'fa-clock' },
-            'Ativo': { color: 'blue', icon: 'fa-file-signature' },
-            'Concluído': { color: 'purple', icon: 'fa-check-double' },
-            'Cancelado': { color: 'red', icon: 'fa-ban' }
-        };
+        let functions; // Declarada globalmente
 
         // --- Funções Auxiliares ---
-        // A coleção de contratos é pública
-        const getSharedContractsCollection = () => collection(db, `artifacts/${appId}/public/data/contracts`);
-        // A coleção de papéis de usuário também é pública para que a Cloud Function possa acessá-la
-        const getUserRoleDoc = (uid) => doc(db, `artifacts/${appId}/public/data/userRoles`, uid);
-
-        const showAuthAlert = (elId, message) => {
-            const errorEl = document.getElementById(elId);
-            errorEl.textContent = message;
-            errorEl.classList.remove('hidden');
-        };
-        
-        const showAlert = (title, message, buttons) => {
-            alertModal.querySelector('#alert-title').textContent = title;
-            alertModal.querySelector('#alert-message').textContent = message;
-            const buttonsContainer = alertModal.querySelector('#alert-buttons');
-            buttonsContainer.innerHTML = '';
-            buttons.forEach(btn => {
-                const buttonEl = document.createElement('button');
-                buttonEl.textContent = btn.text;
-                buttonEl.className = btn.class;
-                buttonEl.onclick = () => {
-                    alertModal.classList.add('hidden');
-                    btn.onClick();
-                };
-                buttonsContainer.appendChild(buttonEl);
-            });
-            alertModal.classList.remove('hidden');
-            alertModal.classList.add('flex');
-        };
+        const getUserRolesCollection = () => collection(db, `userRoles`);
+        // ...
 
         // --- Lógica de Autenticação ---
         const setupAuthListeners = () => {
-            document.getElementById('show-register').addEventListener('click', (e) => {
-                e.preventDefault();
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-            });
-
-            document.getElementById('show-login').addEventListener('click', (e) => {
-                e.preventDefault();
-                registerForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-            });
-            
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } catch (error) {
-                    showAuthAlert('login-error', 'Email ou senha inválidos.');
-                    console.error("Erro de login:", error);
-                }
-            });
+            // ... (código dos listeners de login/cadastro)
 
             registerForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = document.getElementById('register-email').value;
-                const password = document.getElementById('register-password').value;
+                // ...
                 try {
                     await createUserWithEmailAndPassword(auth, email, password);
-                    // A Cloud Function cuidará de atribuir o papel de admin/user.
-                    // O usuário será redirecionado automaticamente pelo onAuthStateChanged.
                 } catch (error) {
-                     let message = 'Erro ao cadastrar.';
-                    if (error.code === 'auth/email-already-in-use') {
-                        message = 'Este endereço de e-mail já está em uso.';
-                    } else if (error.code === 'auth/invalid-email') {
-                        message = 'O formato do e-mail é inválido.';
-                    } else if (error.code === 'auth/weak-password') {
-                        message = 'A senha deve ter pelo menos 6 caracteres.';
-                    }
-                    showAuthAlert('register-error', message);
-                    console.error("Erro de cadastro:", error);
+                    // ...
                 }
-            });
-
-            logoutBtn.addEventListener('click', () => {
-                signOut(auth);
             });
 
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    userId = user.uid;
-                    userEmail = user.email;
-                    
-                    // Espera um pouco para a Cloud Function atribuir o papel
-                    setTimeout(async () => {
-                        const roleDoc = await getDoc(getUserRoleDoc(userId));
-                        userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
-
-                        authView.classList.add('hidden');
-                        appView.classList.remove('hidden');
-                        document.getElementById('user-email').textContent = `Bem-vindo, ${userEmail} (${userRole})`;
-                        
-                        if (userRole === 'admin') {
-                            adminPanelBtn.classList.remove('hidden');
-                        } else {
-                            adminPanelBtn.classList.add('hidden');
-                        }
-                        
-                        setupAppListeners();
-                    }, 1500); // Atraso para dar tempo para a função de nuvem rodar
-                    
-                } else {
-                    authView.classList.remove('hidden');
-                    appView.classList.add('hidden');
-                    userId = null;
-                    userEmail = null;
-                    userRole = null;
-                    allContracts = [];
-                    contractGrid.innerHTML = '';
-                    if (unsubscribeFromContracts) {
-                        unsubscribeFromContracts();
+                    // ... (lógica de login)
+                    if (userRole === 'admin') {
+                        adminPanelBtn.classList.remove('hidden');
+                        adminPanelBtn.addEventListener('click', openAdminPanel);
+                    } else {
+                        adminPanelBtn.classList.add('hidden');
                     }
+                    // ...
+                } else {
+                    // ... (lógica de logout)
                 }
             });
         };
 
-        // --- Funções do App Principal ---
-        const setupAppListeners = () => {
-            if (unsubscribeFromContracts) unsubscribeFromContracts();
+        // --- Lógica do Painel de Admin ---
+        const adminModal = document.getElementById('admin-modal');
+        const createUserForm = document.getElementById('create-user-form');
 
-            unsubscribeFromContracts = onSnapshot(getSharedContractsCollection(), (snapshot) => {
-                allContracts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                applyFiltersAndRender();
-            }, (error) => {
-                console.error("Erro ao buscar contratos:", error);
-                loadingMessage.textContent = 'Erro ao carregar contratos.';
-            });
+        const openAdminPanel = async () => {
+            adminModal.classList.remove('hidden');
+            adminModal.classList.add('flex');
+            loadUserList();
+        };
 
-            addContractBtn.addEventListener('click', () => openModal('add'));
-            searchInput.addEventListener('input', applyFiltersAndRender);
-            filterProcessStatus.addEventListener('change', applyFiltersAndRender);
-            
-            contractModal.querySelector('#cancel-btn').addEventListener('click', closeModal);
-            contractModal.querySelector('#close-modal-btn').addEventListener('click', closeModal);
-            contractModal.addEventListener('click', (e) => { if (e.target === contractModal) closeModal(); });
-            contractModal.querySelector('#contract-form').addEventListener('submit', handleFormSubmit);
+        const closeAdminPanel = () => {
+            adminModal.classList.add('hidden');
+            adminModal.classList.remove('flex');
         };
         
-        const openModal = (mode = 'add', contractData = {}) => {
-            const formEl = contractModal.querySelector('#contract-form');
-            formEl.reset();
-            formEl.querySelector('#contract-id').value = '';
-            formEl.querySelector('#current-file').textContent = '';
-            
-            if (mode === 'edit') {
-                formEl.querySelector('#modal-title').textContent = 'Editar Contrato';
-                formEl.querySelector('#contract-id').value = contractData.id;
-                formEl.querySelector('#title').value = contractData.title;
-                formEl.querySelector('#party').value = contractData.party;
-                formEl.querySelector('#status').value = contractData.status || 'Minuta';
-                formEl.querySelector('#start-date').value = contractData.startDate;
-                formEl.querySelector('#end-date').value = contractData.endDate;
-                formEl.querySelector('#value').value = contractData.value;
-                formEl.querySelector('#observations').value = contractData.observations || '';
-                if(contractData.documentName) {
-                    formEl.querySelector('#current-file').textContent = `Arquivo atual: ${contractData.documentName}`;
-                }
-            } else {
-                formEl.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
-                formEl.querySelector('#status').value = 'Minuta';
-            }
-            contractModal.classList.remove('hidden');
-            contractModal.classList.add('flex');
-        };
-
-        const closeModal = () => {
-            contractModal.classList.add('hidden');
-            contractModal.classList.remove('flex');
-        };
-
-        const handleFormSubmit = async (e) => {
-            e.preventDefault();
-            const formEl = e.target;
-            const id = formEl.querySelector('#contract-id').value;
-            const file = formEl.querySelector('#document-file').files[0];
-            const saveBtn = formEl.querySelector('#save-btn');
-            const saveBtnText = formEl.querySelector('#save-btn-text');
-            const saveSpinner = formEl.querySelector('#save-spinner');
-
-            saveBtn.disabled = true;
-            saveBtnText.textContent = id ? 'Atualizando...' : 'Salvando...';
-            saveSpinner.classList.remove('hidden');
-
-            let contractData = {
-                title: formEl.querySelector('#title').value,
-                party: formEl.querySelector('#party').value,
-                status: formEl.querySelector('#status').value,
-                startDate: formEl.querySelector('#start-date').value,
-                endDate: formEl.querySelector('#end-date').value,
-                value: parseFloat(formEl.querySelector('#value').value),
-                observations: formEl.querySelector('#observations').value,
-                lastModifiedBy: { uid: userId, email: userEmail },
-            };
-            
-            if (!id) {
-                contractData.createdBy = { uid: userId, email: userEmail };
-            }
-
-            try {
-                if (file) {
-                    const storagePath = `contracts/${Date.now()}_${file.name}`;
-                    const storageRef = ref(storage, storagePath);
-                    await uploadBytes(storageRef, file);
-                    contractData.documentURL = await getDownloadURL(storageRef);
-                    contractData.documentName = file.name;
-                    contractData.storagePath = storagePath;
-                }
-
-                if (id) {
-                    await updateDoc(doc(getSharedContractsCollection(), id), contractData);
-                } else {
-                    await addDoc(getSharedContractsCollection(), contractData);
-                }
-                closeModal();
-            } catch (error) {
-                console.error("Erro ao salvar contrato:", error);
-                showAlert('Erro', 'Ocorreu um erro ao salvar.', [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md', onClick: () => {} }]);
-            } finally {
-                saveBtn.disabled = false;
-                saveBtnText.textContent = 'Salvar';
-                saveSpinner.classList.add('hidden');
-            }
-        };
-
-        const deleteContract = async (contract) => {
-            showAlert( 'Confirmar Deleção', `Deletar "${contract.title}"?`,
-                [
-                    { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md', onClick: () => {} },
-                    { 
-                        text: 'Deletar', 
-                        class: 'px-4 py-2 bg-red-600 text-white rounded-md', 
-                        onClick: async () => {
-                            try {
-                                if (contract.storagePath) {
-                                    await deleteObject(ref(storage, contract.storagePath));
-                                }
-                                await deleteDoc(doc(getSharedContractsCollection(), contract.id));
-                            } catch (error) {
-                                console.error("Erro ao deletar:", error);
-                                showAlert('Erro', 'Ocorreu um erro ao deletar.', [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md', onClick: () => {} }]);
-                            }
-                        } 
-                    }
-                ]
-            );
-        };
+        document.getElementById('close-admin-modal-btn').addEventListener('click', closeAdminPanel);
         
-        const applyFiltersAndRender = () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            const processStatusFilter = filterProcessStatus.value;
-            
-            const filteredContracts = allContracts.filter(contract => {
-                const processStatus = contract.status || 'Minuta';
-                const processStatusMatch = processStatusFilter === 'all' || processStatus === processStatusFilter;
-                const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || contract.party.toLowerCase().includes(searchTerm);
-                return processStatusMatch && searchMatch;
-            });
-            renderContracts(filteredContracts);
-        };
+        const loadUserList = () => {
+            const userListContainer = document.getElementById('user-list-container');
+            userListContainer.innerHTML = '<p class="text-gray-500">Carregando usuários...</p>';
 
-        const renderContracts = (contracts) => {
-            contractGrid.innerHTML = '';
-            if (contracts.length === 0) {
-                loadingMessage.innerHTML = `<div class="text-center col-span-full py-10"><i class="fas fa-folder-open fa-3x text-gray-400 mb-4"></i><p class="text-gray-500 text-lg">Nenhum contrato encontrado.</p></div>`;
-                loadingMessage.style.display = 'block';
-            } else {
-                loadingMessage.style.display = 'none';
-                contracts.forEach(contract => {
-                    contractGrid.appendChild(createContractCard(contract));
+            onSnapshot(getUserRolesCollection(), (snapshot) => {
+                userListContainer.innerHTML = '';
+                if (snapshot.empty) {
+                    userListContainer.innerHTML = '<p class="text-gray-500">Nenhum usuário com papel definido encontrado.</p>';
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const userData = doc.data();
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'flex justify-between items-center p-2 border-b';
+                    userDiv.innerHTML = `
+                        <span>${userData.email}</span>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full ${userData.role === 'admin' ? 'bg-purple-200 text-purple-800' : 'bg-gray-200 text-gray-800'}">${userData.role}</span>
+                    `;
+                    userListContainer.appendChild(userDiv);
                 });
-            }
-        };
-
-        const createContractCard = (contract) => {
-            const card = document.createElement('div');
-            card.className = 'bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between';
-            const processStatus = contract.status || 'Minuta';
-            const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Minuta'];
-            const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contract.value);
-            const formattedStartDate = new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR');
-            const formattedEndDate = new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR');
-            const documentLink = contract.documentURL ? `<a href="${contract.documentURL}" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-file-pdf mr-1"></i> Ver Documento</a>` : `<span class="text-gray-400"><i class="fas fa-file-excel mr-1"></i> Sem anexo</span>`;
-            const observationsHTML = contract.observations ? `<p class="mt-3 pt-3 border-t border-gray-100 text-sm text-gray-700 whitespace-pre-wrap"><i class="fas fa-comment-dots w-5 mr-1 text-gray-400"></i>${contract.observations}</p>` : '';
-
-            card.innerHTML = `
-                <div>
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-lg font-bold text-gray-800 pr-2">${contract.title}</h3>
-                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-${processStyle.color}-100 text-${processStyle.color}-800 whitespace-nowrap">
-                            <i class="fas ${processStyle.icon} mr-1"></i>
-                            ${processStatus}
-                        </span>
-                    </div>
-                    <p class="text-sm text-gray-600 mb-4">com <strong>${contract.party}</strong></p>
-                    <div class="space-y-3 text-sm text-gray-700">
-                        <p><i class="fas fa-calendar-alt w-5 mr-1 text-gray-400"></i>Período: ${formattedStartDate} a ${formattedEndDate}</p>
-                        <p><i class="fas fa-coins w-5 mr-1 text-gray-400"></i>Valor: ${formattedValue}</p>
-                        <p>${documentLink}</p>
-                    </div>
-                    ${observationsHTML}
-                </div>
-                <div class="flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100">
-                    <button data-action="edit" class="text-gray-500 hover:text-blue-600 transition-colors text-sm"><i class="fas fa-pencil-alt mr-1"></i>Editar</button>
-                    <button data-action="delete" class="text-gray-500 hover:text-red-600 transition-colors text-sm"><i class="fas fa-trash-alt mr-1"></i>Deletar</button>
-                </div>`; 
-            card.querySelector('[data-action="edit"]').addEventListener('click', () => openModal('edit', contract));
-            card.querySelector('[data-action="delete"]').addEventListener('click', () => deleteContract(contract));
-            return card;
+            });
         };
         
-        // --- Lógica de Inicialização ---
-        document.addEventListener('DOMContentLoaded', async () => {
+        createUserForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const feedbackEl = document.getElementById('create-user-feedback');
+            const email = document.getElementById('new-user-email').value;
+            const password = document.getElementById('new-user-password').value;
+            const role = document.getElementById('new-user-role').value;
+
+            feedbackEl.classList.remove('bg-red-200', 'text-red-800', 'bg-green-200', 'text-green-800');
+            feedbackEl.classList.add('hidden');
+
             try {
-                const firebaseConfigString = typeof __firebase_config !== 'undefined' ? __firebase_config : '';
-                if (!firebaseConfigString || firebaseConfigString === '{}') throw new Error("Configuração do Firebase não encontrada.");
-                const firebaseConfig = JSON.parse(firebaseConfigString);
-                if (!firebaseConfig.projectId) throw new Error("ID do Projeto não encontrado na configuração do Firebase.");
+                const createUser = httpsCallable(functions, 'createUser');
+                const result = await createUser({ email, password, role });
 
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                storage = getStorage(app);
-                
-                setupAuthListeners();
-
+                if (result.data.success) {
+                    feedbackEl.textContent = 'Usuário criado com sucesso!';
+                    feedbackEl.className = 'p-3 text-sm rounded-lg bg-green-200 text-green-800';
+                    feedbackEl.classList.remove('hidden');
+                    createUserForm.reset();
+                } else {
+                    throw new Error(result.data.error.message);
+                }
             } catch (error) {
-                authView.innerHTML = `<div class="text-center p-8 text-red-600">
-                    <i class="fas fa-exclamation-triangle fa-3x mb-4"></i>
-                    <p class="text-lg font-bold">Erro Crítico de Configuração</p>
-                    <p class="text-gray-600">${error.message}</p>
-                </div>`;
-                console.error("Erro na inicialização:", error);
+                feedbackEl.textContent = `Erro: ${error.message}`;
+                feedbackEl.className = 'p-3 text-sm rounded-lg bg-red-200 text-red-800';
+                feedbackEl.classList.remove('hidden');
+                console.error("Erro ao criar usuário:", error);
+            }
+        });
+
+        // --- Lógica de Inicialização ---
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                // ... (código de inicialização)
+                functions = getFunctions(app); // Inicializa as Functions
+                setupAuthListeners();
+            } catch (error) {
+                // ...
             }
         });
     </script>
