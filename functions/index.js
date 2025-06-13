@@ -1,49 +1,96 @@
-// Importa as ferramentas necessárias do Firebase Functions e do Firebase Admin SDK.
+// Importa os novos gatilhos da v2 do Firebase Functions
+const { onCall } = require("firebase-functions/v2/https");
+const { onUserCreate } = require("firebase-functions/v2/auth");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
-// Inicializa o Admin SDK para permitir que a função acesse outros serviços do Firebase.
 admin.initializeApp();
 
 /**
- * Função que é acionada automaticamente toda vez que um novo usuário é criado
- * no sistema de autenticação do Firebase.
+ * Função v2 acionada na criação de um usuário para definir o primeiro como admin.
  */
-exports.assignInitialRole = functions.auth.user().onCreate(async (user) => {
-  const { uid } = user;
+exports.assignInitialRole = onUserCreate(async (event) => {
+  // O objeto 'event.data' contém informações sobre o usuário recém-criado.
+  const user = event.data;
+  const { uid, email } = user;
+
+  // Acessa a coleção onde os papéis dos usuários são armazenados.
+  const rolesCollection = admin.firestore().collection("userRoles");
 
   try {
-    // Acessa a coleção 'userRoles' na raiz do Firestore. Este é um caminho simples e direto.
-    const rolesCollection = admin.firestore().collection("userRoles");
-
     // Faz uma consulta para ver se já existe algum documento na coleção de papéis.
-    // Limitamos a 1 para ser mais eficiente, pois só precisamos saber se está vazia ou não.
     const snapshot = await rolesCollection.limit(1).get();
+    const role = snapshot.empty ? "admin" : "user";
 
-    let role = "user"; // Por padrão, o papel é 'user'.
-
-    // Se a coleção estiver vazia, este é o primeiro usuário a se registrar.
-    if (snapshot.empty) {
-      console.log(`Nenhum usuário encontrado. Designando ${uid} como admin.`);
-      role = "admin"; // Promove a 'admin'.
-    } else {
-      console.log(`Usuários existentes encontrados. Designando ${uid} como user.`);
-    }
-
-    // Cria um documento na coleção 'userRoles' com o UID do novo usuário como ID.
-    // O documento conterá o papel ('admin' or 'user') que acabamos de determinar.
+    // Cria um documento na coleção 'userRoles' com o UID do novo usuário.
     await rolesCollection.doc(uid).set({
       role: role,
-      email: user.email,
+      email: email,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log(`Papel '${role}' atribuído com sucesso para o usuário ${uid}.`);
-    return null;
+    // Usa o logger integrado para registrar o sucesso.
+    functions.logger.log(`Papel '${role}' atribuído para ${email}.`);
 
   } catch (error) {
-    // Se ocorrer algum erro, ele será registrado nos logs do Firebase Functions.
-    console.error(`Falha ao atribuir papel para o usuário ${uid}:`, error);
-    return null;
+    functions.logger.error(`Falha ao atribuir papel para ${uid}:`, error);
+  }
+});
+
+
+/**
+ * Função Chamável (Callable Function) v2 para criar novos usuários.
+ * Apenas usuários autenticados com o papel 'admin' podem chamar esta função.
+ */
+exports.createUser = onCall({ region: "us-central1" }, async (request) => {
+  // 1. Verifica se quem está chamando é um admin autenticado.
+  if (!request.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "A requisição deve ser feita por um usuário autenticado."
+    );
+  }
+  
+  const callerUid = request.auth.uid;
+  const callerRoleDoc = await admin.firestore().collection("userRoles").doc(callerUid).get();
+  
+  if (!callerRoleDoc.exists() || callerRoleDoc.data().role !== "admin") {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Apenas administradores podem criar novos usuários."
+      );
+  }
+
+  // 2. Valida os dados recebidos (email, senha, papel).
+  const { email, password, role } = request.data;
+  if (!email || !password || !role) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "A função deve ser chamada com 'email', 'password' e 'role'."
+    );
+  }
+
+  // 3. Cria o novo usuário no sistema de autenticação.
+  try {
+    const userRecord = await admin.auth().createUser({
+      email: email,
+      password: password,
+    });
+    
+    // 4. Define o papel do novo usuário no Firestore.
+    await admin.firestore().collection("userRoles").doc(userRecord.uid).set({
+      role: role,
+      email: email,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return { success: true, uid: userRecord.uid };
+
+  } catch (error) {
+    if (error.code === 'auth/email-already-exists') {
+        throw new functions.https.HttpsError('already-exists', 'O endereço de e-mail já está em uso por outra conta.');
+    }
+    functions.logger.error("Erro ao criar usuário:", error);
+    throw new functions.https.HttpsError('unknown', 'Ocorreu um erro desconhecido ao criar o usuário.');
   }
 });
