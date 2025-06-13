@@ -26,28 +26,29 @@
                 <div class="mt-4 space-y-4">
                     <div>
                         <label for="login-email" class="block text-sm font-medium text-gray-600">Email</label>
-                        <input type="email" id="login-email" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <input type="email" id="login-email" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md" required>
                     </div>
                     <div>
                         <label for="login-password" class="block text-sm font-medium text-gray-600">Senha</label>
-                        <input type="password" id="login-password" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <input type="password" id="login-password" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md" required>
                     </div>
                 </div>
                 <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Entrar</button>
                 <p class="mt-4 text-sm text-center text-gray-600">
-                    Não tem uma conta? <a href="#" id="show-register" class="font-medium text-blue-600 hover:underline">Cadastre-se</a>
+                    Precisa criar uma conta? <a href="#" id="show-register" class="font-medium text-blue-600 hover:underline">Cadastre-se</a>
                 </p>
             </form>
+
             <!-- Formulário de Cadastro -->
             <form id="register-form" class="hidden">
-                 <h2 class="text-2xl font-bold text-center text-gray-700">Cadastro</h2>
-                 <p class="text-sm text-center text-gray-500 mt-2">Crie sua conta para acessar.</p>
+                 <h2 class="text-2xl font-bold text-center text-gray-700">Cadastro de Usuário</h2>
                 <div id="register-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
                 <div class="mt-4 space-y-4">
-                    <input type="email" id="register-email" placeholder="Email" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                     <input type="email" id="register-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                     <input type="password" id="register-password" placeholder="Senha para o novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                     <input type="password" id="register-secret" placeholder="Chave de Cadastro" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
                 </div>
-                <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Cadastrar</button>
+                <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Criar Conta</button>
                 <p class="mt-4 text-sm text-center text-gray-600">
                     Já tem uma conta? <a href="#" id="show-login" class="font-medium text-blue-600 hover:underline">Faça Login</a>
                 </p>
@@ -55,67 +56,23 @@
         </div>
     </div>
 
-    <!-- Tela Principal da Aplicação -->
+    <!-- Tela Principal da Aplicação (inicialmente oculta) -->
     <div id="app-view" class="hidden">
-        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-            <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
-                 <div class="flex flex-col items-start">
-                    <h1 class="text-3xl font-bold text-gray-700">
-                        <i class="fas fa-file-signature mr-2"></i>Gerenciador de Contratos
-                    </h1>
-                    <p id="user-email" class="text-sm text-gray-500 mt-1"></p>
-                </div>
-                <div>
-                    <button id="admin-panel-btn" class="hidden bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 mr-4">
-                        <i class="fas fa-user-shield mr-2"></i>Painel Admin
-                    </button>
-                    <button id="addContractBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 mr-4">
-                        <i class="fas fa-plus mr-2"></i>Adicionar Contrato
-                    </button>
-                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
-                    </button>
-                </div>
-            </header>
-
-            <div class="mb-8 bg-white p-4 rounded-lg shadow">
-                <!-- ... Filtros ... -->
-            </div>
-
-            <main id="contract-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></main>
-            <div id="loading-message" class="text-center py-10">
-                <p class="text-gray-500 text-lg">Carregando...</p>
-            </div>
-        </div>
+        <!-- O conteúdo da sua aplicação (cabeçalho, filtros, etc.) vai aqui -->
     </div>
     
-    <!-- Modal para Contrato -->
-    <div id="contract-modal" class="fixed inset-0 z-40 items-center justify-center hidden modal-backdrop">
-        <!-- ... Conteúdo do Modal de Contrato ... -->
-    </div>
-
-    <!-- Modal do Painel Admin -->
-    <div id="admin-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
-        <!-- ... Conteúdo do Modal Admin ... -->
-    </div>
-    
-    <!-- Modal de Alerta -->
-    <div id="alert-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
-        <!-- ... Conteúdo do Modal de Alerta ... -->
-    </div>
+    <!-- Outros Modais (Contrato, Alerta, Admin) -->
 
     <!-- Módulo Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, getDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
-
+        import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
         // --- Lógica de Inicialização ---
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                // Configuração do Firebase
+                // ** IMPORTANTE: Cole sua configuração do Firebase aqui **
                 const firebaseConfig = {
                   apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
                   authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
@@ -125,37 +82,29 @@
                   appId: "1:544353319340:web:070ac470eac63241f36209"
                 };
 
-                // Inicializa o Firebase
                 const app = initializeApp(firebaseConfig);
                 const db = getFirestore(app);
                 const auth = getAuth(app);
-                const storage = getStorage(app);
-                const functions = getFunctions(app);
                 
-                setupAuthListeners(auth, db, functions);
+                setupAuthListeners(auth, db);
 
             } catch (error) {
-                const authView = document.getElementById('auth-view');
-                authView.innerHTML = `<div class="text-center p-8 text-red-600">
-                    <i class="fas fa-exclamation-triangle fa-3x mb-4"></i>
-                    <p class="text-lg font-bold">Erro Crítico de Configuração</p>
-                    <p class="text-gray-600">${error.message}</p>
-                </div>`;
-                console.error("Erro na inicialização:", error);
+                document.getElementById('auth-view').innerHTML = `<div class="text-center p-8 text-red-600">Erro crítico: ${error.message}</div>`;
             }
         });
 
-        // --- Variáveis Globais (movidas para dentro para ter acesso ao db) ---
-        let userId, userEmail, userRole;
-        let allContracts = [];
-        let unsubscribeFromContracts; 
-
         // --- Funções Auxiliares ---
-        function getSharedContractsCollection(db) { return collection(db, "sharedContracts"); }
-        function getUserRoleDoc(db, uid) { return doc(db, "userRoles", uid); }
+        const getUserRoleDoc = (db, uid) => doc(db, "userRoles", uid);
+        const getAdminSetupDoc = (db) => doc(db, "appConfig", "adminSetup");
+
+        function showAuthAlert(elId, message) {
+            const errorEl = document.getElementById(elId);
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        }
 
         // --- Lógica de Autenticação ---
-        function setupAuthListeners(auth, db, functions) {
+        function setupAuthListeners(auth, db) {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
 
@@ -173,62 +122,89 @@
             
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // ... (código de login)
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch (error) {
+                    showAuthAlert('login-error', 'Email ou senha inválidos.');
+                }
             });
 
             registerForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // ... (código de cadastro)
-            });
+                
+                // ** IMPORTANTE: Defina sua chave secreta aqui **
+                const CHAVE_SECRETA = "`6rH£&7T30ER"; 
+                
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                const secret = document.getElementById('register-secret').value;
 
-            document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+                if (secret !== CHAVE_SECRETA) {
+                    showAuthAlert('register-error', 'Chave de Cadastro inválida.');
+                    return;
+                }
+
+                try {
+                    // Verifica se um admin já existe
+                    const adminDoc = await getDoc(getAdminSetupDoc(db));
+                    const isAdminSetup = adminDoc.exists();
+
+                    // Cria o usuário na autenticação do Firebase
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    // Define o papel do usuário
+                    const role = isAdminSetup ? 'user' : 'admin';
+                    await setDoc(getUserRoleDoc(db, user.uid), {
+                        role: role,
+                        email: user.email
+                    });
+
+                    // Se for o primeiro usuário (admin), marca a configuração como completa
+                    if (!isAdminSetup) {
+                        await setDoc(getAdminSetupDoc(db), { setupComplete: true });
+                    }
+                    
+                    // O onAuthStateChanged irá redirecionar para a tela principal
+                } catch (error) {
+                    let message = 'Erro ao criar conta.';
+                    if (error.code === 'auth/email-already-in-use') {
+                        message = 'Este e-mail já está em uso.';
+                    } else if (error.code === 'auth/weak-password') {
+                        message = 'A senha precisa ter no mínimo 6 caracteres.';
+                    }
+                    showAuthAlert('register-error', message);
+                }
+            });
 
             onAuthStateChanged(auth, async (user) => {
                 const authView = document.getElementById('auth-view');
                 const appView = document.getElementById('app-view');
 
                 if (user) {
-                    userId = user.uid;
-                    userEmail = user.email;
-                    
-                    // Atraso para dar tempo para a Cloud Function rodar
-                    setTimeout(async () => {
-                        const roleDoc = await getDoc(getUserRoleDoc(db, userId));
-                        userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
+                    const roleDoc = await getDoc(getUserRoleDoc(db, user.uid));
+                    const userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
 
-                        authView.classList.add('hidden');
-                        appView.classList.remove('hidden');
-                        document.getElementById('user-email').textContent = `Bem-vindo, ${userEmail} (${userRole})`;
-                        
-                        const adminPanelBtn = document.getElementById('admin-panel-btn');
-                        if (userRole === 'admin') {
-                            adminPanelBtn.classList.remove('hidden');
-                            adminPanelBtn.addEventListener('click', () => openAdminPanel(db, functions));
-                        } else {
-                            adminPanelBtn.classList.add('hidden');
-                        }
-                        
-                        setupAppListeners(db, storage, functions);
-                    }, 2000); 
-                    
+                    // Aqui você mostraria a tela principal da sua aplicação
+                    authView.classList.add('hidden');
+                    appView.classList.remove('hidden');
+                    appView.innerHTML = `
+                        <div class="p-8">
+                            <h1 class="text-2xl font-bold">Login bem-sucedido!</h1>
+                            <p>Email: ${user.email}</p>
+                            <p>Papel: ${userRole}</p>
+                            <button id="logout-btn-main" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Sair</button>
+                        </div>
+                    `;
+                    document.getElementById('logout-btn-main').addEventListener('click', () => signOut(auth));
                 } else {
-                    // ... (lógica de logout)
+                    authView.classList.remove('hidden');
+                    appView.classList.add('hidden');
                 }
             });
         }
-
-        // --- Funções do App Principal ---
-        function setupAppListeners(db, storage, functions) {
-            // ... (código dos listeners da aplicação)
-        }
-        
-        // --- Funções dos Modais ---
-        function openAdminPanel(db, functions) {
-            // ... (código para abrir o painel de admin e carregar usuários)
-        }
-        
-        // ... (resto do seu código JavaScript)
-
     </script>
 </body>
 </html>
