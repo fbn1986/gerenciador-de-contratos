@@ -24,31 +24,24 @@
                 <h2 class="text-2xl font-bold text-center text-gray-700">Login</h2>
                 <div id="login-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
                 <div class="mt-4 space-y-4">
-                    <div>
-                        <label for="login-email" class="block text-sm font-medium text-gray-600">Email</label>
-                        <input type="email" id="login-email" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md" required>
-                    </div>
-                    <div>
-                        <label for="login-password" class="block text-sm font-medium text-gray-600">Senha</label>
-                        <input type="password" id="login-password" class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md" required>
-                    </div>
+                    <input type="email" id="login-email" placeholder="Email" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    <input type="password" id="login-password" placeholder="Senha" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
                 </div>
                 <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Entrar</button>
                 <p class="mt-4 text-sm text-center text-gray-600">
-                    Precisa criar uma conta? <a href="#" id="show-register" class="font-medium text-blue-600 hover:underline">Cadastre-se</a>
+                    Primeiro acesso? <a href="#" id="show-register" class="font-medium text-blue-600 hover:underline">Crie a conta de Admin</a>
                 </p>
             </form>
 
             <!-- Formulário de Cadastro -->
             <form id="register-form" class="hidden">
-                 <h2 class="text-2xl font-bold text-center text-gray-700">Cadastro de Usuário</h2>
-                <div id="register-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
+                 <h2 class="text-2xl font-bold text-center text-gray-700">Cadastro do Administrador</h2>
+                 <div id="register-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
                 <div class="mt-4 space-y-4">
-                     <input type="email" id="register-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                     <input type="password" id="register-password" placeholder="Senha para o novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                     <input type="password" id="register-secret" placeholder="Chave de Cadastro" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                     <input type="email" id="register-email" placeholder="Email para o Admin" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                     <input type="password" id="register-password" placeholder="Senha para o Admin" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
                 </div>
-                <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Criar Conta</button>
+                <button type="submit" class="w-full px-4 py-2 mt-6 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700">Criar Conta Admin</button>
                 <p class="mt-4 text-sm text-center text-gray-600">
                     Já tem uma conta? <a href="#" id="show-login" class="font-medium text-blue-600 hover:underline">Faça Login</a>
                 </p>
@@ -56,46 +49,77 @@
         </div>
     </div>
 
-    <!-- Tela Principal da Aplicação (inicialmente oculta) -->
+    <!-- Tela Principal da Aplicação -->
     <div id="app-view" class="hidden">
-        <!-- O conteúdo da sua aplicação (cabeçalho, filtros, etc.) vai aqui -->
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+            <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                 <div class="flex flex-col items-start">
+                    <h1 class="text-3xl font-bold text-gray-700">
+                        <i class="fas fa-file-signature mr-2"></i>Gerenciador de Contratos
+                    </h1>
+                    <p id="user-email" class="text-sm text-gray-500 mt-1"></p>
+                </div>
+                <div class="flex items-center">
+                    <button id="create-user-btn" class="hidden bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 mr-4">
+                        <i class="fas fa-user-plus mr-2"></i>Criar Usuário
+                    </button>
+                    <button id="addContractBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 mr-4">
+                        <i class="fas fa-plus mr-2"></i>Adicionar Contrato
+                    </button>
+                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </button>
+                </div>
+            </header>
+            
+            <div id="main-content">
+                <!-- Conteúdo (filtros, grade) será inserido aqui -->
+            </div>
+        </div>
     </div>
     
-    <!-- Outros Modais (Contrato, Alerta, Admin) -->
+    <!-- Modal para Criar Usuário -->
+    <div id="create-user-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4 p-6 relative animate-fade-in">
+            <h2 class="text-2xl font-bold mb-6 text-gray-700">Criar Novo Usuário</h2>
+            <form id="create-user-form">
+                <div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
+                <div class="space-y-4">
+                    <input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    <input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                </div>
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" id="cancel-create-user-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <!-- Módulo Firebase -->
+    <!-- Outros Modais (Contrato, Alerta) -->
+
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // --- Lógica de Inicialização ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // ** IMPORTANTE: Cole sua configuração do Firebase aqui **
-                const firebaseConfig = {
-                  apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
-                  authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
-                  projectId: "gerenciador-de-contratos-cbc47",
-                  storageBucket: "gerenciador-de-contratos-cbc47.appspot.com",
-                  messagingSenderId: "544353319340",
-                  appId: "1:544353319340:web:070ac470eac63241f36209"
-                };
+        const mainContentEl = document.getElementById('main-content');
+        const firebaseConfig = {
+          apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
+          authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
+          projectId: "gerenciador-de-contratos-cbc47",
+          storageBucket: "gerenciador-de-contratos-cbc47.appspot.com",
+          messagingSenderId: "544353319340",
+          appId: "1:544353319340:web:070ac470eac63241f36209"
+        };
 
-                const app = initializeApp(firebaseConfig);
-                const db = getFirestore(app);
-                const auth = getAuth(app);
-                
-                setupAuthListeners(auth, db);
-
-            } catch (error) {
-                document.getElementById('auth-view').innerHTML = `<div class="text-center p-8 text-red-600">Erro crítico: ${error.message}</div>`;
-            }
-        });
+        const primaryApp = initializeApp(firebaseConfig);
+        const auth = getAuth(primaryApp);
+        const db = getFirestore(primaryApp);
 
         // --- Funções Auxiliares ---
-        const getUserRoleDoc = (db, uid) => doc(db, "userRoles", uid);
-        const getAdminSetupDoc = (db) => doc(db, "appConfig", "adminSetup");
+        const getUserRoleDoc = (uid) => doc(db, "userRoles", uid);
+        const getAdminSetupDoc = () => doc(db, "appConfig", "adminSetup");
 
         function showAuthAlert(elId, message) {
             const errorEl = document.getElementById(elId);
@@ -104,7 +128,7 @@
         }
 
         // --- Lógica de Autenticação ---
-        function setupAuthListeners(auth, db) {
+        function setupAuthListeners() {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
 
@@ -122,10 +146,8 @@
             
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
                 try {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value);
                 } catch (error) {
                     showAuthAlert('login-error', 'Email ou senha inválidos.');
                 }
@@ -133,49 +155,17 @@
 
             registerForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
-                // ** IMPORTANTE: Defina sua chave secreta aqui **
-                const CHAVE_SECRETA = "`6rH£&7T30ER"; 
-                
-                const email = document.getElementById('register-email').value;
-                const password = document.getElementById('register-password').value;
-                const secret = document.getElementById('register-secret').value;
-
-                if (secret !== CHAVE_SECRETA) {
-                    showAuthAlert('register-error', 'Chave de Cadastro inválida.');
-                    return;
-                }
-
                 try {
-                    // Verifica se um admin já existe
-                    const adminDoc = await getDoc(getAdminSetupDoc(db));
-                    const isAdminSetup = adminDoc.exists();
-
-                    // Cria o usuário na autenticação do Firebase
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-
-                    // Define o papel do usuário
-                    const role = isAdminSetup ? 'user' : 'admin';
-                    await setDoc(getUserRoleDoc(db, user.uid), {
-                        role: role,
-                        email: user.email
-                    });
-
-                    // Se for o primeiro usuário (admin), marca a configuração como completa
-                    if (!isAdminSetup) {
-                        await setDoc(getAdminSetupDoc(db), { setupComplete: true });
+                    const adminDoc = await getDoc(getAdminSetupDoc());
+                    if (adminDoc.exists()) {
+                        showAuthAlert('register-error', 'A conta de Admin já foi criada. Faça o login.');
+                        return;
                     }
-                    
-                    // O onAuthStateChanged irá redirecionar para a tela principal
+                    const userCredential = await createUserWithEmailAndPassword(auth, registerForm['register-email'].value, registerForm['register-password'].value);
+                    await setDoc(getUserRoleDoc(userCredential.user.uid), { role: 'admin', email: userCredential.user.email });
+                    await setDoc(getAdminSetupDoc(), { setupComplete: true });
                 } catch (error) {
-                    let message = 'Erro ao criar conta.';
-                    if (error.code === 'auth/email-already-in-use') {
-                        message = 'Este e-mail já está em uso.';
-                    } else if (error.code === 'auth/weak-password') {
-                        message = 'A senha precisa ter no mínimo 6 caracteres.';
-                    }
-                    showAuthAlert('register-error', message);
+                    showAuthAlert('register-error', 'Erro ao criar conta. Verifique os dados.');
                 }
             });
 
@@ -184,27 +174,93 @@
                 const appView = document.getElementById('app-view');
 
                 if (user) {
-                    const roleDoc = await getDoc(getUserRoleDoc(db, user.uid));
+                    const roleDoc = await getDoc(getUserRoleDoc(user.uid));
                     const userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
+                    
+                    document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole})`;
+                    const createUserBtn = document.getElementById('create-user-btn');
 
-                    // Aqui você mostraria a tela principal da sua aplicação
+                    if (userRole === 'admin') {
+                        createUserBtn.classList.remove('hidden');
+                        createUserBtn.onclick = () => document.getElementById('create-user-modal').classList.remove('hidden');
+                    } else {
+                        createUserBtn.classList.add('hidden');
+                    }
+                    
                     authView.classList.add('hidden');
                     appView.classList.remove('hidden');
-                    appView.innerHTML = `
-                        <div class="p-8">
-                            <h1 class="text-2xl font-bold">Login bem-sucedido!</h1>
-                            <p>Email: ${user.email}</p>
-                            <p>Papel: ${userRole}</p>
-                            <button id="logout-btn-main" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Sair</button>
-                        </div>
-                    `;
-                    document.getElementById('logout-btn-main').addEventListener('click', () => signOut(auth));
+                    renderAppContent(userRole);
+                    setupAppListeners(userRole);
                 } else {
                     authView.classList.remove('hidden');
                     appView.classList.add('hidden');
                 }
             });
         }
+        
+        // --- Lógica de Criação de Usuário (Admin) ---
+        function setupAdminFunctions() {
+            const createUserModal = document.getElementById('create-user-modal');
+            const createUserForm = document.getElementById('create-user-form');
+            
+            document.getElementById('cancel-create-user-btn').onclick = () => createUserModal.classList.add('hidden');
+
+            createUserForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const feedbackEl = document.getElementById('create-user-feedback');
+                const email = createUserForm['new-user-email'].value;
+                const password = createUserForm['new-user-password'].value;
+                
+                feedbackEl.textContent = 'Criando...';
+                feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-yellow-100 text-yellow-800';
+                feedbackEl.classList.remove('hidden');
+                
+                // Técnica da App Secundária para criar usuário sem deslogar o admin
+                const tempAppName = 'temp-user-creation-app-' + Date.now();
+                const tempApp = initializeApp(firebaseConfig, tempAppName);
+                const tempAuth = getAuth(tempApp);
+
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(tempAuth, email, password);
+                    await setDoc(getUserRoleDoc(userCredential.user.uid), {
+                        role: 'user', // Admins só criam usuários comuns
+                        email: userCredential.user.email
+                    });
+                    
+                    feedbackEl.textContent = 'Usuário criado com sucesso!';
+                    feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-green-100 text-green-800';
+                    createUserForm.reset();
+                } catch (error) {
+                    feedbackEl.textContent = 'Erro: ' + (error.code === 'auth/email-already-in-use' ? 'Email já existe.' : 'Falha ao criar.');
+                    feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-red-100 text-red-800';
+                } finally {
+                    await deleteApp(tempApp); // Limpa a app temporária
+                }
+            });
+        }
+        
+        // --- Funções da Aplicação Principal ---
+        function setupAppListeners(userRole) {
+            document.getElementById('logoutBtn').onclick = () => signOut(auth);
+            if (userRole === 'admin') {
+                setupAdminFunctions();
+            }
+            // Adicione aqui outros listeners, como para o botão de adicionar contrato, etc.
+        }
+
+        function renderAppContent(userRole) {
+            // No futuro, aqui você pode ter UIs diferentes para admin e user
+            mainContentEl.innerHTML = `
+                <div class="p-8 bg-white rounded-lg shadow">
+                    <h2 class="text-xl font-bold">Bem-vindo à sua área de contratos!</h2>
+                    <p class="mt-2 text-gray-600">Use os botões no cabeçalho para gerenciar seus contratos ou, se for um administrador, para criar novos usuários.</p>
+                </div>
+            `;
+        }
+        
+        // --- Inicialização ---
+        setupAuthListeners();
+
     </script>
 </body>
 </html>
