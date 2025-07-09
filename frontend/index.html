@@ -7,22 +7,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- jsPDF para gerar relatórios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .modal-backdrop { background-color: rgba(0,0,0,0.5); }
+        .modal-backdrop { background-color: rgba(0,0,0,0.5); display: none; }
+        .modal-backdrop.flex { display: flex; }
+        .modal-content { max-height: 90vh; overflow-y: auto; }
         @keyframes fade-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <!-- Tela de Autenticação -->
     <div id="auth-view" class="flex items-center justify-center min-h-screen">
         <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-            <!-- Formulário de Login -->
             <form id="login-form">
                 <h2 class="text-2xl font-bold text-center text-gray-700">Login</h2>
                 <div id="login-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
@@ -35,8 +34,6 @@
                     Primeiro acesso? <a href="#" id="show-register" class="font-medium text-blue-600 hover:underline">Crie a conta de Admin</a>
                 </p>
             </form>
-
-            <!-- Formulário de Cadastro -->
             <form id="register-form" class="hidden">
                  <h2 class="text-2xl font-bold text-center text-gray-700">Cadastro do Administrador</h2>
                  <div id="register-error" class="hidden p-3 mt-4 text-sm text-red-700 bg-red-100 rounded-lg"></div>
@@ -52,17 +49,16 @@
         </div>
     </div>
 
-    <!-- Tela Principal da Aplicação -->
     <div id="app-view" class="hidden">
         <div class="container mx-auto p-4 sm:p-6 lg:p-8">
             <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
                  <div class="flex flex-col items-start">
-                    <h1 class="text-3xl font-bold text-gray-700">
-                        <i class="fas fa-file-signature mr-2"></i>Gerenciador de Contratos
-                    </h1>
-                    <p id="user-email" class="text-sm text-gray-500 mt-1"></p>
-                </div>
-                <div class="flex items-center">
+                     <h1 class="text-3xl font-bold text-gray-700">
+                         <i class="fas fa-file-signature mr-2"></i>Gerenciador de Contratos
+                     </h1>
+                     <p id="user-email" class="text-sm text-gray-500 mt-1"></p>
+                 </div>
+                <div class="flex items-center mt-4 sm:mt-0">
                     <button id="report-btn" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 mr-4">
                         <i class="fas fa-print mr-2"></i>Gerar Relatório
                     </button>
@@ -91,47 +87,29 @@
                         </div>
                         <div>
                             <select id="filter-process-status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="all">Todos</option>
-                                <option value="Minuta">Minuta</option>
-                                <option value="Aguardando assinaturas">Aguardando assinaturas</option>
-                                <option value="Ativo">Ativo</option>
-                                <option value="Concluído">Concluído</option>
-                                <option value="Cancelado">Cancelado</option>
+                                <option value="all">Todos os Status</option>
+                                <option>Minuta Registrada</option>
+                                <option>Minuta de Documentação Validada</option>
+                                <option>Minuta com Fluxo Aprovado</option>
+                                <option>Minuta em Processo de Assinatura</option>
+                                <option>Minuta Assinada e Concluída</option>
                             </select>
                         </div>
                         <div>
                             <select id="filter-cost-center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="all">Todos</option>
-                                <option value="Institucional">Institucional</option>
-                                <option value="Cidade do Samba">Cidade do Samba</option>
-                                <option value="Custeio">Custeio</option>
+                                <option value="all">Todos os C. de Custo</option>
+                                <option>Institucional</option>
+                                <option>Cidade do Samba</option>
+                                <option>Custeio</option>
                             </select>
                         </div>
                     </div>
-                    <div class="mt-4">
+                     <div class="mt-4">
                          <select id="filter-sector" class="w-full md:w-1/4 bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="all">Todos</option>
-                                <option>RH</option>
-                                <option>Administração</option>
-                                <option>Impostos</option>
-                                <option>Manutenção</option>
-                                <option>Operacional</option>
-                                <option>Jurídico</option>
-                                <option>Cultural</option>
-                                <option>Comercial/Institucional</option>
-                                <option>Infraestrutura</option>
-                                <option>Julgadores</option>
-                                <option>Logística</option>
-                                <option>Marketing</option>
-                                <option>Comunicação</option>
-                                <option>Pista</option>
-                                <option>Produção</option>
-                                <option>Produção - Setor 4</option>
-                                <option>Eventos</option>
-                                <option>Contrapartidas</option>
-                                <option>Ensaios Técnicos</option>
-                            </select>
-                    </div>
+                             <option value="all">Todos os Setores</option>
+                             <option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option>
+                         </select>
+                     </div>
                 </div>
 
                 <main id="contract-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></main>
@@ -142,128 +120,35 @@
         </div>
     </div>
     
-    <!-- Modal para Criar Usuário -->
-    <div id="create-user-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
+    <div id="create-user-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4 p-6 relative animate-fade-in">
             <h2 class="text-2xl font-bold mb-6 text-gray-700">Criar Novo Usuário</h2>
-            <form id="create-user-form">
-                <div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
-                <div class="space-y-4">
-                    <input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    <input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                </div>
-                <div class="flex justify-end space-x-4 mt-8">
-                    <button type="button" id="cancel-create-user-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button>
-                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md">Criar</button>
-                </div>
-            </form>
+            <form id="create-user-form"><div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div><div class="space-y-4"><input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required><input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div class="flex justify-end space-x-4 mt-8"><button type="button" id="cancel-create-user-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button><button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md">Criar</button></div></form>
         </div>
     </div>
 
-    <!-- Modal para Contrato -->
-    <div id="contract-modal" class="fixed inset-0 z-40 items-center justify-center hidden modal-backdrop">
+    <div id="contract-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-40">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg mx-4 p-6 relative animate-fade-in modal-content">
             <h2 id="modal-title" class="text-2xl font-bold mb-6 text-gray-700">Adicionar Novo Contrato</h2>
-            <form id="contract-form">
-                <input type="hidden" id="contract-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="md:col-span-2">
-                        <label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label>
-                        <input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    </div>
-                     <div class="md:col-span-2">
-                        <label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label>
-                        <select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
-                            <option value="Minuta">Minuta</option>
-                            <option value="Aguardando assinaturas">Aguardando assinaturas</option>
-                            <option value="Ativo">Ativo</option>
-                            <option value="Concluído">Concluído</option>
-                            <option value="Cancelado">Cancelado</option>
-                        </select>
-                    </div>
-                     <div class="md:col-span-2">
-                        <label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label>
-                        <input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc.">
-                    </div>
-                    <div>
-                        <label for="cost_center" class="block text-sm font-medium text-gray-600 mb-1">Centro de Custos</label>
-                        <select id="cost_center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
-                            <option value="Institucional">Institucional</option>
-                            <option value="Cidade do Samba">Cidade do Samba</option>
-                            <option value="Custeio">Custeio</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="sector" class="block text-sm font-medium text-gray-600 mb-1">Setor</label>
-                        <select id="sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
-                            <option>RH</option>
-                            <option>Administração</option>
-                            <option>Impostos</option>
-                            <option>Manutenção</option>
-                            <option>Operacional</option>
-                            <option>Jurídico</option>
-                            <option>Cultural</option>
-                            <option>Comercial/Institucional</option>
-                            <option>Infraestrutura</option>
-                            <option>Julgadores</option>
-                            <option>Logística</option>
-                            <option>Marketing</option>
-                            <option>Comunicação</option>
-                            <option>Pista</option>
-                            <option>Produção</option>
-                            <option>Produção - Setor 4</option>
-                            <option>Eventos</option>
-                            <option>Contrapartidas</option>
-                            <option>Ensaios Técnicos</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="party" class="block text-sm font-medium text-gray-600 mb-1">Parte Contratada</label>
-                        <input type="text" id="party" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    </div>
-                    <div>
-                        <label for="value" class="block text-sm font-medium text-gray-600 mb-1">Valor (R$)</label>
-                        <input type="number" step="0.01" id="value" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    </div>
-                    <div>
-                        <label for="start-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Início</label>
-                        <input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    </div>
-                    <div>
-                        <label for="end-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Término</label>
-                        <input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="observations" class="block text-sm font-medium text-gray-600 mb-1">Observações</label>
-                        <textarea id="observations" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Falta assinatura do diretor financeiro..."></textarea>
-                    </div>
-                </div>
-                <div class="flex justify-end space-x-4 mt-8">
-                    <button type="button" id="cancel-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button>
-                    <button type="submit" id="save-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center">
-                        <span id="save-btn-text">Salvar</span>
-                        <i id="save-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
-                    </button>
-                </div>
-            </form>
+            <form id="contract-form"><input type="hidden" id="contract-id"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"><div class="md:col-span-2"><label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label><input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div class="md:col-span-2"><label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label><select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Minuta Registrada</option><option>Minuta de Documentação Validada</option><option>Minuta com Fluxo Aprovado</option><option>Minuta em Processo de Assinatura</option><option>Minuta Assinada e Concluída</option></select></div><div class="md:col-span-2"><label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label><input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc."></div><div><label for="cost_center" class="block text-sm font-medium text-gray-600 mb-1">Centro de Custos</label><select id="cost_center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Institucional</option><option>Cidade do Samba</option><option>Custeio</option></select></div><div><label for="sector" class="block text-sm font-medium text-gray-600 mb-1">Setor</label><select id="sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option></select></div><div><label for="party" class="block text-sm font-medium text-gray-600 mb-1">Parte Contratada</label><input type="text" id="party" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div><label for="value" class="block text-sm font-medium text-gray-600 mb-1">Valor (R$)</label><input type="number" step="0.01" id="value" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div><label for="start-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Início</label><input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div><label for="end-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Término</label><input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div class="md:col-span-2"><label for="observations" class="block text-sm font-medium text-gray-600 mb-1">Observações</label><textarea id="observations" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Falta assinatura do diretor financeiro..."></textarea></div><div class="md:col-span-2"><label for="document-files" class="block text-sm font-medium text-gray-600 mb-1">Anexar Documentos (PDF)</label><input type="file" id="document-files" accept=".pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple>
+                <div id="attachments-list" class="mt-4 space-y-2"></div>
+                <div id="staged-attachments-list" class="mt-2 space-y-2"></div>
+            </div></div><div class="flex justify-end space-x-4 mt-8"><button type="button" id="cancel-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button><button type="submit" id="save-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center"><span id="save-btn-text">Salvar</span><i id="save-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i></button></div></form>
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <i class="fas fa-times fa-lg"></i>
             </button>
         </div>
     </div>
     
-    <div id="alert-modal" class="fixed inset-0 z-50 items-center justify-center hidden modal-backdrop">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm mx-4 p-6 relative animate-fade-in">
-            <h3 id="alert-title" class="text-lg font-bold text-gray-800 mb-4"></h3>
-            <p id="alert-message" class="text-gray-600 mb-6"></p>
-            <div id="alert-buttons" class="flex justify-end space-x-4"></div>
-        </div>
+    <div id="alert-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm mx-4 p-6 relative animate-fade-in"><h3 id="alert-title" class="text-lg font-bold text-gray-800 mb-4"></h3><p id="alert-message" class="text-gray-600 mb-6"></p><div id="alert-buttons" class="flex justify-end space-x-4"></div></div>
     </div>
 
     <script type="module">
         import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, deleteField, serverTimestamp, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
         
         const { jsPDF } = window.jspdf;
 
@@ -279,25 +164,25 @@
         const primaryApp = initializeApp(firebaseConfig);
         const auth = getAuth(primaryApp);
         const db = getFirestore(primaryApp);
+        const functions = getFunctions(primaryApp, 'southamerica-east1');
 
         // --- Variáveis Globais ---
-        let userId, userEmail, userRole;
+        let currentUser = null;
+        let userRole = 'user';
         let allContracts = [];
-        let unsubscribeFromContracts;
+        let unsubscribeFromContracts = null;
+        let unsubscribeFromAttachments = null;
+        let appInitialized = false;
 
         const PROCESS_STATUS_STYLES = {
-            'Minuta': { color: 'gray', icon: 'fa-pencil-alt' },
-            'Aguardando assinaturas': { color: 'orange', icon: 'fa-clock' },
-            'Ativo': { color: 'blue', icon: 'fa-file-signature' },
-            'Concluído': { color: 'purple', icon: 'fa-check-double' },
-            'Cancelado': { color: 'red', icon: 'fa-ban' }
+            'Minuta Registrada': { color: 'gray', icon: 'fa-pencil-alt' },
+            'Minuta de Documentação Validada': { color: 'blue', icon: 'fa-check' },
+            'Minuta com Fluxo Aprovado': { color: 'indigo', icon: 'fa-check-double' },
+            'Minuta em Processo de Assinatura': { color: 'orange', icon: 'fa-signature' },
+            'Minuta Assinada e Concluída': { color: 'green', icon: 'fa-check-circle' }
         };
 
         // --- Funções Auxiliares ---
-        const getSharedContractsCollection = () => collection(db, "sharedContracts");
-        const getUserRoleDoc = (uid) => doc(db, "userRoles", uid);
-        const getAdminSetupDoc = () => doc(db, "appConfig", "adminSetup");
-
         function showAuthAlert(elId, message) {
             const errorEl = document.getElementById(elId);
             errorEl.textContent = message;
@@ -315,150 +200,70 @@
                 buttonEl.textContent = btn.text;
                 buttonEl.className = btn.class;
                 buttonEl.onclick = () => {
-                    alertModal.classList.add('hidden');
+                    alertModal.classList.remove('flex');
                     if(btn.onClick) btn.onClick();
                 };
                 buttonsContainer.appendChild(buttonEl);
             });
-            alertModal.classList.remove('hidden');
             alertModal.classList.add('flex');
         };
 
-        // --- Lógica de Autenticação ---
-        async function setupAuthListeners() {
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const registerLinkContainer = document.getElementById('register-link-container');
+        // --- Lógica de Autenticação e Inicialização ---
+        onAuthStateChanged(auth, async (user) => {
+            const authView = document.getElementById('auth-view');
+            const appView = document.getElementById('app-view');
 
-            try {
-                const adminDoc = await getDoc(getAdminSetupDoc());
-                if (adminDoc.exists()) {
-                    registerLinkContainer.style.display = 'none';
+            if (user) {
+                currentUser = user;
+                const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
+                userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
+                
+                document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole})`;
+                
+                if (userRole === 'admin') {
+                    document.getElementById('create-user-btn').classList.remove('hidden');
                 } else {
-                    registerLinkContainer.style.display = 'block';
+                    document.getElementById('create-user-btn').classList.add('hidden');
                 }
+                
+                authView.classList.remove('flex');
+                authView.classList.add('hidden');
+                appView.classList.remove('hidden');
+
+                if (!appInitialized) {
+                    initializeAppListeners();
+                    appInitialized = true;
+                }
+            } else {
+                currentUser = null;
+                userRole = 'user';
+                appInitialized = false;
+                if (unsubscribeFromContracts) unsubscribeFromContracts();
+                authView.classList.remove('hidden');
+                authView.classList.add('flex');
+                appView.classList.add('hidden');
+            }
+        });
+
+        async function setupInitialAuthScreen() {
+            const registerLinkContainer = document.getElementById('register-link-container');
+            try {
+                const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
+                registerLinkContainer.style.display = adminDoc.exists() ? 'none' : 'block';
             } catch (e) {
+                console.error("Erro ao verificar setup do admin:", e);
                 registerLinkContainer.style.display = 'block'; 
             }
-
-            document.getElementById('show-register').addEventListener('click', (e) => {
-                e.preventDefault();
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-            });
-
-            document.getElementById('show-login').addEventListener('click', (e) => {
-                e.preventDefault();
-                registerForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-            });
-            
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                try {
-                    await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value);
-                } catch (error) {
-                    showAuthAlert('login-error', 'Email ou senha inválidos.');
-                }
-            });
-
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                try {
-                    const adminDoc = await getDoc(getAdminSetupDoc());
-                    if (adminDoc.exists()) {
-                        showAuthAlert('register-error', 'A conta de Admin já foi criada.');
-                        return;
-                    }
-                    const userCredential = await createUserWithEmailAndPassword(auth, registerForm['register-email'].value, registerForm['register-password'].value);
-                    await setDoc(getUserRoleDoc(userCredential.user.uid), { role: 'admin', email: userCredential.user.email });
-                    await setDoc(getAdminSetupDoc(), { setupComplete: true });
-                    registerLinkContainer.style.display = 'none';
-                } catch (error) {
-                    let message = 'Erro ao criar conta.';
-                    if (error.code === 'auth/email-already-in-use') { message = 'Este e-mail já está em uso.'; } 
-                    else if (error.code === 'auth/weak-password') { message = 'A senha precisa ter no mínimo 6 caracteres.'; }
-                    else if (error.code === 'permission-denied') { message = 'Erro de permissão. Verifique as regras de segurança do Firestore.'; }
-                    showAuthAlert('register-error', message);
-                }
-            });
-
-            onAuthStateChanged(auth, async (user) => {
-                const authView = document.getElementById('auth-view');
-                const appView = document.getElementById('app-view');
-
-                if (user) {
-                    const roleDoc = await getDoc(getUserRoleDoc(user.uid));
-                    userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
-                    userId = user.uid;
-                    userEmail = user.email;
-                    
-                    document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole})`;
-                    const createUserBtn = document.getElementById('create-user-btn');
-
-                    if (userRole === 'admin') {
-                        createUserBtn.classList.remove('hidden');
-                    } else {
-                        createUserBtn.classList.add('hidden');
-                    }
-                    
-                    authView.classList.add('hidden');
-                    appView.classList.remove('hidden');
-                    setupAppListeners();
-                } else {
-                    authView.classList.remove('hidden');
-                    appView.classList.add('hidden');
-                }
-            });
         }
-        
-        function setupAdminFunctions() {
-            const createUserModal = document.getElementById('create-user-modal');
-            const createUserForm = document.getElementById('create-user-form');
-            
-            document.getElementById('create-user-btn').onclick = () => createUserModal.classList.remove('hidden');
-            document.getElementById('cancel-create-user-btn').onclick = () => createUserModal.classList.add('hidden');
 
-            createUserForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const feedbackEl = document.getElementById('create-user-feedback');
-                const email = createUserForm['new-user-email'].value;
-                const password = createUserForm['new-user-password'].value;
-                
-                feedbackEl.textContent = 'Criando...';
-                feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-yellow-100 text-yellow-800 block';
-                
-                const tempAppName = 'temp-user-creation-app-' + Date.now();
-                const tempApp = initializeApp(firebaseConfig, tempAppName);
-                const tempAuth = getAuth(tempApp);
+        function initializeAppListeners() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            document.getElementById('show-register').addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.add('hidden'); registerForm.classList.remove('hidden'); });
+            document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); registerForm.classList.add('hidden'); loginForm.classList.remove('hidden'); });
+            loginForm.addEventListener('submit', async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value); } catch (error) { showAuthAlert('login-error', 'Email ou senha inválidos.'); } });
+            registerForm.addEventListener('submit', handleRegisterFormSubmit);
 
-                try {
-                    const userCredential = await createUserWithEmailAndPassword(tempAuth, email, password);
-                    await setDoc(getUserRoleDoc(userCredential.user.uid), { role: 'user', email: userCredential.user.email });
-                    
-                    feedbackEl.textContent = 'Usuário criado com sucesso!';
-                    feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-green-100 text-green-800 block';
-                    createUserForm.reset();
-                } catch (error) {
-                    feedbackEl.textContent = 'Erro: ' + (error.code === 'auth/email-already-in-use' ? 'Email já existe.' : 'Falha ao criar.');
-                    feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-red-100 text-red-800 block';
-                } finally {
-                    await deleteApp(tempApp);
-                }
-            });
-        }
-        
-        function setupAppListeners() {
-            if (unsubscribeFromContracts) unsubscribeFromContracts();
-
-            unsubscribeFromContracts = onSnapshot(getSharedContractsCollection(), (snapshot) => {
-                allContracts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                applyFiltersAndRender();
-            }, (error) => {
-                console.error("Erro no listener de contratos (onSnapshot): ", error);
-                document.getElementById('loading-message').innerHTML = `<div class="text-red-600 p-4 rounded-md bg-red-100">Erro de permissão ao carregar contratos. Verifique as <a href="https://console.firebase.google.com/" target="_blank" class="font-bold underline">regras de segurança do Firestore</a>.</div>`;
-            });
-            
             document.getElementById('logoutBtn').onclick = () => signOut(auth);
             document.getElementById('addContractBtn').addEventListener('click', () => openContractModal('add'));
             document.getElementById('report-btn').addEventListener('click', generatePDFReport);
@@ -467,94 +272,232 @@
             document.getElementById('filter-cost-center').addEventListener('change', applyFiltersAndRender);
             document.getElementById('filter-sector').addEventListener('change', applyFiltersAndRender);
             
-            if (userRole === 'admin') {
-                setupAdminFunctions();
+            document.getElementById('contract-form').addEventListener('submit', handleContractFormSubmit);
+            document.getElementById('cancel-btn').addEventListener('click', closeContractModal);
+            document.getElementById('close-modal-btn').addEventListener('click', closeContractModal);
+
+            const createUserModal = document.getElementById('create-user-modal');
+            document.getElementById('create-user-btn').onclick = () => createUserModal.classList.add('flex');
+            document.getElementById('cancel-create-user-btn').onclick = () => createUserModal.classList.remove('flex');
+            document.getElementById('create-user-form').addEventListener('submit', handleCreateUserFormSubmit);
+
+            const contractsQuery = query(collection(db, "sharedContracts"), orderBy("lastModifiedAt", "desc"));
+            
+            unsubscribeFromContracts = onSnapshot(contractsQuery, async (snapshot) => {
+                const contractsFromDB = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                allContracts = await Promise.all(contractsFromDB.map(async (contract) => {
+                    const attachmentsQuery = query(collection(db, `sharedContracts/${contract.id}/anexos`), orderBy("uploadedAt"));
+                    const attachmentsSnapshot = await getDocs(attachmentsQuery);
+                    const attachments = attachmentsSnapshot.docs.map(doc => doc.data());
+                    return { ...contract, attachments };
+                }));
+
+                applyFiltersAndRender();
+                document.getElementById('loading-message').style.display = 'none';
+            }, (error) => {
+                console.error("Erro no listener de contratos:", error);
+                document.getElementById('loading-message').innerHTML = `<p class="text-red-600 p-4 rounded-md bg-red-100">Erro de permissão ao carregar. Verifique as regras do Firestore.</p>`;
+            });
+        }
+        
+        async function handleRegisterFormSubmit(e) {
+            e.preventDefault();
+            try {
+                const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
+                if (adminDoc.exists()) {
+                    showAuthAlert('register-error', 'A conta de Admin já foi criada.');
+                    return;
+                }
+                await createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value);
+            } catch (error) {
+                let message = 'Erro ao criar conta.';
+                if (error.code === 'auth/email-already-in-use') message = 'Este e-mail já está em uso.';
+                else if (error.code === 'auth/weak-password') message = 'A senha precisa ter no mínimo 6 caracteres.';
+                showAuthAlert('register-error', message);
             }
         }
         
-        function openContractModal(mode = 'add', contractData = {}) {
+        async function handleCreateUserFormSubmit(e) {
+            e.preventDefault();
+            const feedbackEl = document.getElementById('create-user-feedback');
+            const email = e.target['new-user-email'].value;
+            const password = e.target['new-user-password'].value;
+            
+            feedbackEl.textContent = 'Criando...';
+            feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-yellow-100 text-yellow-800 block';
+            
+            try {
+                const createUser = httpsCallable(functions, 'createUser');
+                await createUser({ email, password, role: 'user' });
+                feedbackEl.textContent = 'Usuário criado com sucesso!';
+                feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-green-100 text-green-800 block';
+                e.target.reset();
+            } catch (error) {
+                feedbackEl.textContent = `Erro: ${error.message}`;
+                feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-red-100 text-red-800 block';
+            }
+        }
+        
+        async function openContractModal(mode = 'add', contractData = {}) {
             const modal = document.getElementById('contract-modal');
             const form = modal.querySelector('#contract-form');
-            form.reset();
-            form.querySelector('#contract-id').value = '';
+            const fileInput = form.querySelector('#document-files');
+            const stagedAttachmentsListDiv = form.querySelector('#staged-attachments-list');
             
+            form.reset();
+            fileInput.value = '';
+            stagedAttachmentsListDiv.innerHTML = '';
+            
+            fileInput.addEventListener('change', renderStagedAttachments);
+            
+            const attachmentsListDiv = form.querySelector('#attachments-list');
+            
+            if (unsubscribeFromAttachments) unsubscribeFromAttachments();
+
             if (mode === 'edit') {
-                modal.querySelector('#modal-title').textContent = 'Editar Contrato';
+                modal.querySelector('#modal-title').textContent = 'Gerenciar Contrato';
                 form.querySelector('#contract-id').value = contractData.id;
-                form.querySelector('#title').value = contractData.title;
-                form.querySelector('#party').value = contractData.party;
-                form.querySelector('#status').value = contractData.status || 'Minuta';
+                form.querySelector('#title').value = contractData.title || '';
+                form.querySelector('#party').value = contractData.party || '';
+                form.querySelector('#status').value = contractData.status || 'Minuta Registrada';
                 form.querySelector('#service_type').value = contractData.service_type || '';
                 form.querySelector('#cost_center').value = contractData.cost_center || 'Institucional';
                 form.querySelector('#sector').value = contractData.sector || 'RH';
-                form.querySelector('#start-date').value = contractData.startDate;
-                form.querySelector('#end-date').value = contractData.endDate;
-                form.querySelector('#value').value = contractData.value;
+                form.querySelector('#start-date').value = contractData.startDate || '';
+                form.querySelector('#end-date').value = contractData.endDate || '';
+                form.querySelector('#value').value = contractData.value || 0;
                 form.querySelector('#observations').value = contractData.observations || '';
+                fileInput.disabled = false;
+                
+                attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Carregando anexos...</p>';
+                const attachmentsQuery = query(collection(db, `sharedContracts/${contractData.id}/anexos`), orderBy("uploadedAt", "desc"));
+                unsubscribeFromAttachments = onSnapshot(attachmentsQuery, (snapshot) => {
+                    const attachments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderAttachmentsList(attachments, contractData.id);
+                });
+
             } else {
                 modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
+                form.querySelector('#contract-id').value = '';
+                attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Salve o contrato primeiro para poder adicionar anexos.</p>';
+                fileInput.disabled = true;
             }
-            modal.classList.remove('hidden');
             modal.classList.add('flex');
         };
 
         function closeContractModal() {
-            document.getElementById('contract-modal').classList.add('hidden');
-        }
+            if (unsubscribeFromAttachments) unsubscribeFromAttachments();
+            
+            const fileInput = document.getElementById('document-files');
+            fileInput.removeEventListener('change', renderStagedAttachments);
 
-        document.getElementById('contract-form').addEventListener('submit', handleContractFormSubmit);
-        document.getElementById('cancel-btn').addEventListener('click', closeContractModal);
-        document.getElementById('close-modal-btn').addEventListener('click', closeContractModal);
+            document.getElementById('contract-modal').classList.remove('flex');
+        }
         
         async function handleContractFormSubmit(e) {
-            e.preventDefault();
-            const form = e.target;
-            const saveBtn = form.querySelector('#save-btn');
-            const saveBtnText = form.querySelector('#save-btn-text');
-            const saveSpinner = form.querySelector('#save-spinner');
-            
-            saveBtn.disabled = true;
-            if(saveBtnText) saveBtnText.textContent = 'Salvando...';
-            if(saveSpinner) saveSpinner.classList.remove('hidden');
+    e.preventDefault();
+    const form = e.target;
+    const saveBtn = form.querySelector('#save-btn');
+    const saveBtnText = form.querySelector('#save-btn-text');
+    const saveSpinner = form.querySelector('#save-spinner');
+    
+    saveBtn.disabled = true;
+    saveBtnText.textContent = 'Salvando...';
+    saveSpinner.classList.remove('hidden');
 
-            const id = form.querySelector('#contract-id').value;
-            
-            const contractData = {
-                title: form.querySelector('#title').value,
-                party: form.querySelector('#party').value,
-                status: form.querySelector('#status').value,
-                service_type: form.querySelector('#service_type').value,
-                cost_center: form.querySelector('#cost_center').value,
-                sector: form.querySelector('#sector').value,
-                startDate: form.querySelector('#start-date').value,
-                endDate: form.querySelector('#end-date').value,
-                value: parseFloat(form.querySelector('#value').value),
-                observations: form.querySelector('#observations').value,
-                lastModifiedBy: { uid: userId, email: userEmail },
-            };
-            
-            if (!id) {
-                contractData.createdBy = { uid: userId, email: userEmail };
-            }
+    const id = form.querySelector('#contract-id').value;
+    const files = form.querySelector('#document-files').files;
+    
+    const contractData = {
+        title: form.querySelector('#title').value,
+        party: form.querySelector('#party').value,
+        status: form.querySelector('#status').value,
+        service_type: form.querySelector('#service_type').value,
+        cost_center: form.querySelector('#cost_center').value,
+        sector: form.querySelector('#sector').value,
+        startDate: form.querySelector('#start-date').value,
+        endDate: form.querySelector('#end-date').value,
+        value: parseFloat(form.querySelector('#value').value) || 0,
+        observations: form.querySelector('#observations').value,
+        lastModifiedAt: serverTimestamp(),
+        lastModifiedBy: { uid: currentUser.uid, email: currentUser.email },
+    };
+    
+    let currentContractId = id;
 
-            try {
-                if (id) {
-                    await updateDoc(doc(getSharedContractsCollection(), id), contractData);
-                } else {
-                    await addDoc(getSharedContractsCollection(), contractData);
-                }
-                closeContractModal();
-            } catch (error) {
-                console.error("Erro ao salvar contrato:", error);
-                showAlert('Erro ao Salvar', `Ocorreu um erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
-            } finally {
-                saveBtn.disabled = false;
-                if(saveBtnText) saveBtnText.textContent = 'Salvar';
-                if(saveSpinner) saveSpinner.classList.add('hidden');
+    try {
+        if (id) {
+            await updateDoc(doc(db, "sharedContracts", id), contractData);
+        } else {
+            contractData.createdAt = serverTimestamp();
+            contractData.createdBy = { uid: currentUser.uid, email: currentUser.email };
+            const newDocRef = await addDoc(collection(db, "sharedContracts"), contractData);
+            currentContractId = newDocRef.id;
+        }
+
+        if (files.length > 0 && currentContractId) {
+            saveBtnText.textContent = `Enviando ${files.length} anexo(s)...`;
+            const uploadFile = httpsCallable(functions, 'uploadFile');
+            
+            // Mapeia as promessas de upload
+            const uploadPromises = Array.from(files).map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = async () => {
+                        try {
+                            const result = await uploadFile({ 
+                                fileContent: reader.result,
+                                fileName: file.name,
+                                contractId: currentContractId
+                            });
+                            resolve(result); // Resolve com o resultado da função
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            // Espera todos os uploads terminarem e captura os resultados
+            const uploadResults = await Promise.all(uploadPromises);
+
+            // MUDANÇA PRINCIPAL: Atualiza o estado local com os novos anexos
+            const contractIndex = allContracts.findIndex(c => c.id === currentContractId);
+            if (contractIndex !== -1) {
+                uploadResults.forEach(result => {
+                    if (result.data.success && result.data.newAttachment) {
+                        // Converte o serverTimestamp para um objeto de data local para evitar erros
+                        result.data.newAttachment.uploadedAt = new Date(); 
+                        allContracts[contractIndex].attachments.push(result.data.newAttachment);
+                    }
+                });
+                // Redesenha a tela IMEDIATAMENTE com os dados atualizados
+                applyFiltersAndRender(); 
             }
         }
+
+        if (!id && currentContractId) {
+            const newContractSnapshot = await getDoc(doc(db, "sharedContracts", currentContractId));
+            openContractModal('edit', { id: currentContractId, ...newContractSnapshot.data() });
+        } else {
+            closeContractModal();
+        }
+
+    } catch (error) {
+        console.error("Erro ao salvar contrato:", error);
+        showAlert('Erro ao Salvar', `Ocorreu um erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
+    } finally {
+        saveBtn.disabled = false;
+        saveBtnText.textContent = 'Salvar';
+        saveSpinner.classList.add('hidden');
+    }
+}
         
         function applyFiltersAndRender() {
+            if (!allContracts) return;
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             const statusFilter = document.getElementById('filter-process-status').value;
             const costCenterFilter = document.getElementById('filter-cost-center').value;
@@ -564,7 +507,7 @@
                 const statusMatch = statusFilter === 'all' || contract.status === statusFilter;
                 const costCenterMatch = costCenterFilter === 'all' || contract.cost_center === costCenterFilter;
                 const sectorMatch = sectorFilter === 'all' || contract.sector === sectorFilter;
-                const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || contract.party.toLowerCase().includes(searchTerm);
+                const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || (contract.party && contract.party.toLowerCase().includes(searchTerm));
                 
                 return statusMatch && costCenterMatch && sectorMatch && searchMatch;
             });
@@ -573,13 +516,10 @@
 
         function renderContracts(contracts) {
             const contractGrid = document.getElementById('contract-grid');
-            const loadingMessage = document.getElementById('loading-message');
             contractGrid.innerHTML = '';
-            if (contracts.length === 0) {
-                loadingMessage.innerHTML = `<div class="text-center col-span-full py-10"><i class="fas fa-folder-open fa-3x text-gray-400 mb-4"></i><p class="text-gray-500 text-lg">Nenhum contrato encontrado.</p></div>`;
-                loadingMessage.style.display = 'block';
+            if (contracts.length === 0 && appInitialized) {
+                document.getElementById('loading-message').innerHTML = `<div class="text-center col-span-full py-10"><i class="fas fa-folder-open fa-3x text-gray-400 mb-4"></i><p class="text-gray-500 text-lg">Nenhum contrato encontrado.</p></div>`;
             } else {
-                loadingMessage.style.display = 'none';
                 contracts.forEach(contract => {
                     contractGrid.appendChild(createContractCard(contract));
                 });
@@ -589,20 +529,40 @@
         function createContractCard(contract) {
             const card = document.createElement('div');
             card.className = 'bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between';
-            const processStatus = contract.status || 'Minuta';
-            const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Minuta'];
-            const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contract.value);
-            const formattedStartDate = new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR');
-            const formattedEndDate = new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR');
+            
+            const processStatus = contract.status || 'Minuta Registrada';
+            const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Minuta Registrada'];
+            const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contract.value || 0);
+            const formattedStartDate = contract.startDate ? new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
+            const formattedEndDate = contract.endDate ? new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
+            
             const observationsHTML = contract.observations ? `<p class="mt-3 pt-3 border-t border-gray-100 text-sm text-gray-700 whitespace-pre-wrap"><i class="fas fa-comment-dots w-5 mr-1 text-gray-400"></i>${contract.observations}</p>` : '';
+
+            let attachmentsHTML = '';
+            if (contract.attachments && contract.attachments.length > 0) {
+                attachmentsHTML = `
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-2">
+                            <i class="fas fa-paperclip mr-1 text-gray-400"></i>Anexos:
+                        </h4>
+                        <div class="space-y-2">
+                            ${contract.attachments.map(att => `
+                                <a href="${att.documentURL}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-600 hover:underline text-sm p-1 rounded-md hover:bg-blue-50 transition-colors duration-200">
+                                    <i class="fas fa-file-pdf w-5 mr-2 text-red-500"></i>
+                                    <span class="truncate" title="${att.documentName}">${att.documentName}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
 
             card.innerHTML = `
                 <div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-lg font-bold text-gray-800 pr-2">${contract.title}</h3>
                         <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-${processStyle.color}-100 text-${processStyle.color}-800 whitespace-nowrap">
-                            <i class="fas ${processStyle.icon} mr-1"></i>
-                            ${processStatus}
+                            <i class="fas ${processStyle.icon} mr-1"></i> ${processStatus}
                         </span>
                     </div>
                     <p class="text-sm text-gray-600 mb-4">com <strong>${contract.party}</strong></p>
@@ -614,82 +574,140 @@
                         <p><i class="fas fa-coins w-5 mr-1 text-gray-400"></i>Valor: ${formattedValue}</p>
                     </div>
                     ${observationsHTML}
+                    ${attachmentsHTML} 
                 </div>
                 <div class="flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100">
-                    <button data-action="edit" class="text-gray-500 hover:text-blue-600 transition-colors text-sm"><i class="fas fa-pencil-alt mr-1"></i>Editar</button>
+                    <button data-action="edit" class="text-gray-500 hover:text-blue-600 transition-colors text-sm"><i class="fas fa-pencil-alt mr-1"></i>Gerenciar</button>
                     <button data-action="delete" class="text-gray-500 hover:text-red-600 transition-colors text-sm"><i class="fas fa-trash-alt mr-1"></i>Deletar</button>
-                </div>`; 
+                </div>
+            `;
+            
             card.querySelector('[data-action="edit"]').addEventListener('click', () => openContractModal('edit', contract));
             card.querySelector('[data-action="delete"]').addEventListener('click', () => deleteContract(contract));
             return card;
         }
+        
+        function renderStagedAttachments() {
+            const fileInput = document.getElementById('document-files');
+            const stagedListDiv = document.getElementById('staged-attachments-list');
+            const files = fileInput.files;
+
+            stagedListDiv.innerHTML = '';
+
+            if (files.length > 0) {
+                const titleEl = document.createElement('p');
+                titleEl.className = 'text-xs font-semibold text-gray-500 mt-3 border-t pt-3';
+                titleEl.textContent = files.length > 1 ? 'Arquivos a serem enviados:' : 'Arquivo a ser enviado:';
+                stagedListDiv.appendChild(titleEl);
+            }
+
+            Array.from(files).forEach(file => {
+                const stagedFileHTML = `
+                    <div class="flex items-center justify-between bg-yellow-50 p-2 rounded-md border border-yellow-200">
+                        <div class="flex items-center text-sm truncate pr-2 text-yellow-800">
+                            <i class="fas fa-arrow-up-from-bracket mr-2"></i>
+                            <span class="truncate" title="${file.name}">${file.name}</span>
+                        </div>
+                    </div>
+                `;
+                stagedListDiv.insertAdjacentHTML('beforeend', stagedFileHTML);
+            });
+        }
+        
+        function renderAttachmentsList(attachments, contractId) {
+            const attachmentsListDiv = document.getElementById('attachments-list');
+            if (!attachments || attachments.length === 0) {
+                attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Nenhum anexo salvo.</p>';
+                return;
+            }
+            attachmentsListDiv.innerHTML = attachments.map(att => `
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded-md">
+                    <a href="${att.documentURL}" target="_blank" class="text-blue-600 hover:underline text-sm truncate pr-2" title="${att.documentName}">
+                        <i class="fas fa-file-pdf mr-1"></i>
+                        ${att.documentName}
+                    </a>
+                    <button type="button" data-contract-id="${contractId}" data-attachment-id="${att.id}" data-storage-path="${att.storagePath}" data-document-name="${att.documentName}" class="attachment-delete-btn text-gray-400 hover:text-red-600 transition-colors">
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            attachmentsListDiv.querySelectorAll('.attachment-delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const { contractId, attachmentId, storagePath, documentName } = e.currentTarget.dataset;
+                    handleDeleteAttachment(contractId, attachmentId, storagePath, documentName);
+                });
+            });
+        }
+        
+        async function handleDeleteAttachment(contractId, attachmentId, storagePath, documentName) {
+            showAlert('Confirmar Deleção de Anexo', `Deletar o arquivo "${documentName}"? Esta ação não pode ser desfeita.`, [
+                { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
+                { text: 'Deletar Anexo', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
+                    try {
+                        const deleteFile = httpsCallable(functions, 'deleteFile');
+                        await deleteFile({ contractId, attachmentId, storagePath });
+                    } catch (error) {
+                        showAlert('Erro', `Não foi possível deletar o anexo: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
+                    }
+                }}
+            ]);
+        }
 
         async function deleteContract(contract) {
-            showAlert('Confirmar Deleção', `Deletar "${contract.title}"?`, [
-                { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md', onClick: () => {} },
-                { 
-                    text: 'Deletar', 
-                    class: 'px-4 py-2 bg-red-600 text-white rounded-md', 
-                    onClick: async () => {
-                        try {
-                            await deleteDoc(doc(getSharedContractsCollection(), contract.id));
-                        } catch (error) {
-                            console.error("Erro ao deletar:", error);
+            const attachmentsCollectionRef = collection(db, `sharedContracts/${contract.id}/anexos`);
+            const attachmentsSnapshot = await getDocs(attachmentsCollectionRef);
+            
+            showAlert('Confirmar Deleção', `Deletar o contrato "${contract.title}"? Todos os ${attachmentsSnapshot.size} anexos também serão deletados. Esta ação não pode ser desfeita.`, [
+                { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
+                { text: 'Deletar Contrato', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
+                    try {
+                        if (!attachmentsSnapshot.empty) {
+                            const deleteFile = httpsCallable(functions, 'deleteFile');
+                            const deletePromises = attachmentsSnapshot.docs.map(docSnapshot => {
+                                const att = docSnapshot.data();
+                                return deleteFile({ contractId: contract.id, attachmentId: docSnapshot.id, storagePath: att.storagePath });
+                            });
+                            await Promise.all(deletePromises);
                         }
-                    } 
-                }
+                        await deleteDoc(doc(db, "sharedContracts", contract.id));
+                        showAlert('Sucesso', 'O contrato e seus anexos foram deletados.', [{ text: 'OK', class: 'px-4 py-2 bg-blue-500 text-white rounded-md' }]);
+                    } catch (error) {
+                        showAlert('Erro', `Não foi possível deletar o contrato: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
+                    }
+                }}
             ]);
         }
 
         function generatePDFReport() {
-            const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape' });
-            
             const tableColumn = ["Título", "Parte Contratada", "Status", "Tipo de Serviço", "C. Custo", "Setor", "Início", "Término", "Valor (R$)", "Observações"];
             const tableRows = [];
-
-            // Pega os contratos atualmente filtrados
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('filter-process-status').value;
-            const costCenterFilter = document.getElementById('filter-cost-center').value;
-            const sectorFilter = document.getElementById('filter-sector').value;
-            
             const filteredContracts = allContracts.filter(contract => {
-                const statusMatch = statusFilter === 'all' || contract.status === statusFilter;
-                const costCenterMatch = costCenterFilter === 'all' || contract.cost_center === costCenterFilter;
-                const sectorMatch = sectorFilter === 'all' || contract.sector === sectorFilter;
-                const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || contract.party.toLowerCase().includes(searchTerm);
-                
+                const statusMatch = document.getElementById('filter-process-status').value === 'all' || contract.status === document.getElementById('filter-process-status').value;
+                const costCenterMatch = document.getElementById('filter-cost-center').value === 'all' || contract.cost_center === document.getElementById('filter-cost-center').value;
+                const sectorMatch = document.getElementById('filter-sector').value === 'all' || contract.sector === document.getElementById('filter-sector').value;
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+                const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || (contract.party && contract.party.toLowerCase().includes(searchTerm));
                 return statusMatch && costCenterMatch && sectorMatch && searchMatch;
             });
 
-
             filteredContracts.forEach(contract => {
-                const contractData = [
-                    contract.title,
-                    contract.party,
-                    contract.status || 'Minuta',
-                    contract.service_type || '',
-                    contract.cost_center || '',
-                    contract.sector || '',
+                tableRows.push([
+                    contract.title, contract.party, contract.status || 'N/A',
+                    contract.service_type || '', contract.cost_center || '', contract.sector || '',
                     new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR'),
                     new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR'),
-                    new Intl.NumberFormat('pt-BR').format(contract.value),
+                    new Intl.NumberFormat('pt-BR').format(contract.value || 0),
                     contract.observations || ''
-                ];
-                tableRows.push(contractData);
+                ]);
             });
-
-            doc.text("Relatório de Contratos", 14, 15);
-            doc.autoTable({ 
-                head: [tableColumn], 
-                body: tableRows, 
-                startY: 20 
-            });
+            doc.autoTable({ head: [tableColumn], body: tableRows, startY: 20, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [22, 160, 133] } });
             doc.save("relatorio-contratos.pdf");
         }
         
-        setupAuthListeners();
+        // Inicializa a verificação de setup de admin assim que a página carrega
+        setupInitialAuthScreen();
 
     </script>
 </body>
