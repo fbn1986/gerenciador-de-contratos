@@ -130,10 +130,33 @@
     <div id="contract-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-40">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg mx-4 p-6 relative animate-fade-in modal-content">
             <h2 id="modal-title" class="text-2xl font-bold mb-6 text-gray-700">Adicionar Novo Contrato</h2>
-            <form id="contract-form"><input type="hidden" id="contract-id"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"><div class="md:col-span-2"><label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label><input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div class="md:col-span-2"><label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label><select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Minuta Registrada</option><option>Minuta de Documentação Validada</option><option>Minuta com Fluxo Aprovado</option><option>Minuta em Processo de Assinatura</option><option>Minuta Assinada e Concluída</option></select></div><div class="md:col-span-2"><label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label><input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc."></div><div><label for="cost_center" class="block text-sm font-medium text-gray-600 mb-1">Centro de Custos</label><select id="cost_center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Institucional</option><option>Cidade do Samba</option><option>Custeio</option></select></div><div><label for="sector" class="block text-sm font-medium text-gray-600 mb-1">Setor</label><select id="sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option></select></div><div><label for="party" class="block text-sm font-medium text-gray-600 mb-1">Parte Contratada</label><input type="text" id="party" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div><label for="value" class="block text-sm font-medium text-gray-600 mb-1">Valor (R$)</label><input type="number" step="0.01" id="value" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div><label for="start-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Início</label><input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div><label for="end-date" class="block text-sm font-medium text-gray-600 mb-1">Data de Término</label><input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div class="md:col-span-2"><label for="observations" class="block text-sm font-medium text-gray-600 mb-1">Observações</label><textarea id="observations" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Falta assinatura do diretor financeiro..."></textarea></div><div class="md:col-span-2"><label for="document-files" class="block text-sm font-medium text-gray-600 mb-1">Anexar Documentos (PDF)</label><input type="file" id="document-files" accept=".pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple>
-                <div id="attachments-list" class="mt-4 space-y-2"></div>
-                <div id="staged-attachments-list" class="mt-2 space-y-2"></div>
-            </div></div><div class="flex justify-end space-x-4 mt-8"><button type="button" id="cancel-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button><button type="submit" id="save-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center"><span id="save-btn-text">Salvar</span><i id="save-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i></button></div></form>
+            <form id="contract-form">
+                <input type="hidden" id="contract-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="md:col-span-2"><label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label><input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
+                    <div class="md:col-span-2"><label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label><select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Minuta Registrada</option><option>Minuta de Documentação Validada</option><option>Minuta com Fluxo Aprovado</option><option>Minuta em Processo de Assinatura</option><option>Minuta Assinada e Concluída</option></select></div>
+                    <div class="md:col-span-2"><label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label><input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc."></div>
+                    <div><label for="cost_center" class="block text-sm font-medium text-gray-600 mb-1">Centro de Custos</label><select id="cost_center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Institucional</option><option>Cidade do Samba</option><option>Custeio</option></select></div>
+                    <div><label for="sector" class="block text-sm font-medium text-gray-600 mb-1">Setor</label><select id="sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option></select></div>
+                    <div><label for="party" class="block text-sm font-medium text-gray-600 mb-1">Parte Contratada</label><input type="text" id="party" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
+                    <div><label for="value" class="block text-sm font-medium text-gray-600 mb-1">Valor (R$)</label><input type="number" step="0.01" id="value" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
+                    
+                    <div>
+                        <label for="installments-number" class="block text-sm font-medium text-gray-600 mb-1">Nº de Parcelas</label>
+                        <input type="number" id="installments-number" class="w-full px-3 py-2 border border-gray-300 rounded-md" min="1" value="1">
+                    </div>
+                    <div id="installments-container" class="md:col-span-2 mt-4 space-y-4"></div>
+                    <div><label for="start-date" class="block text-sm font-medium text-gray-600 mb-1">Início</label><input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
+                    <div><label for="end-date" class="block text-sm font-medium text-gray-600 mb-1">Término</label><input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
+                    <div class="md:col-span-2"><label for="observations" class="block text-sm font-medium text-gray-600 mb-1">Observações</label><textarea id="observations" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Falta assinatura do diretor financeiro..."></textarea></div>
+                    <div class="md:col-span-2"><label for="document-files" class="block text-sm font-medium text-gray-600 mb-1">Anexar Documentos (PDF)</label>
+                        <input type="file" id="document-files" accept=".pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple>
+                        <div id="attachments-list" class="mt-4 space-y-2"></div>
+                        <div id="staged-attachments-list" class="mt-2 space-y-2"></div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-4 mt-8"><button type="button" id="cancel-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button><button type="submit" id="save-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center"><span id="save-btn-text">Salvar</span><i id="save-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i></button></div>
+            </form>
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <i class="fas fa-times fa-lg"></i>
             </button>
@@ -145,9 +168,9 @@
     </div>
 
     <script type="module">
-        import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, deleteField, serverTimestamp, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, getDoc, addDoc, updateDoc, serverTimestamp, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
         
         const { jsPDF } = window.jspdf;
@@ -166,7 +189,6 @@
         const db = getFirestore(primaryApp);
         const functions = getFunctions(primaryApp, 'southamerica-east1');
 
-        // --- Variáveis Globais ---
         let currentUser = null;
         let userRole = 'user';
         let allContracts = [];
@@ -182,7 +204,6 @@
             'Minuta Assinada e Concluída': { color: 'green', icon: 'fa-check-circle' }
         };
 
-        // --- Funções Auxiliares ---
         function showAuthAlert(elId, message) {
             const errorEl = document.getElementById(elId);
             errorEl.textContent = message;
@@ -208,7 +229,6 @@
             alertModal.classList.add('flex');
         };
 
-        // --- Lógica de Autenticação e Inicialização ---
         onAuthStateChanged(auth, async (user) => {
             const authView = document.getElementById('auth-view');
             const appView = document.getElementById('app-view');
@@ -352,6 +372,8 @@
             fileInput.addEventListener('change', renderStagedAttachments);
             
             const attachmentsListDiv = form.querySelector('#attachments-list');
+            const installmentsNumberInput = form.querySelector('#installments-number');
+            installmentsNumberInput.addEventListener('change', () => generateInstallmentFields());
             
             if (unsubscribeFromAttachments) unsubscribeFromAttachments();
 
@@ -370,6 +392,14 @@
                 form.querySelector('#observations').value = contractData.observations || '';
                 fileInput.disabled = false;
                 
+                if (contractData.installments && contractData.installments.length > 0) {
+                    installmentsNumberInput.value = contractData.installments.length;
+                    generateInstallmentFields(contractData.installments);
+                } else {
+                    installmentsNumberInput.value = 1;
+                    generateInstallmentFields();
+                }
+                
                 attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Carregando anexos...</p>';
                 const attachmentsQuery = query(collection(db, `sharedContracts/${contractData.id}/anexos`), orderBy("uploadedAt", "desc"));
                 unsubscribeFromAttachments = onSnapshot(attachmentsQuery, (snapshot) => {
@@ -380,8 +410,10 @@
             } else {
                 modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
                 form.querySelector('#contract-id').value = '';
-                attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Salve o contrato primeiro para poder adicionar anexos.</p>';
-                fileInput.disabled = true;
+                attachmentsListDiv.innerHTML = '';
+                fileInput.disabled = false;
+                installmentsNumberInput.value = 1;
+                generateInstallmentFields();
             }
             modal.classList.add('flex');
         };
@@ -392,109 +424,114 @@
             const fileInput = document.getElementById('document-files');
             fileInput.removeEventListener('change', renderStagedAttachments);
 
+            const installmentsNumberInput = document.getElementById('installments-number');
+            installmentsNumberInput.removeEventListener('change', () => generateInstallmentFields());
+
             document.getElementById('contract-modal').classList.remove('flex');
         }
         
         async function handleContractFormSubmit(e) {
-    e.preventDefault();
-    const form = e.target;
-    const saveBtn = form.querySelector('#save-btn');
-    const saveBtnText = form.querySelector('#save-btn-text');
-    const saveSpinner = form.querySelector('#save-spinner');
-    
-    saveBtn.disabled = true;
-    saveBtnText.textContent = 'Salvando...';
-    saveSpinner.classList.remove('hidden');
-
-    const id = form.querySelector('#contract-id').value;
-    const files = form.querySelector('#document-files').files;
-    
-    const contractData = {
-        title: form.querySelector('#title').value,
-        party: form.querySelector('#party').value,
-        status: form.querySelector('#status').value,
-        service_type: form.querySelector('#service_type').value,
-        cost_center: form.querySelector('#cost_center').value,
-        sector: form.querySelector('#sector').value,
-        startDate: form.querySelector('#start-date').value,
-        endDate: form.querySelector('#end-date').value,
-        value: parseFloat(form.querySelector('#value').value) || 0,
-        observations: form.querySelector('#observations').value,
-        lastModifiedAt: serverTimestamp(),
-        lastModifiedBy: { uid: currentUser.uid, email: currentUser.email },
-    };
-    
-    let currentContractId = id;
-
-    try {
-        if (id) {
-            await updateDoc(doc(db, "sharedContracts", id), contractData);
-        } else {
-            contractData.createdAt = serverTimestamp();
-            contractData.createdBy = { uid: currentUser.uid, email: currentUser.email };
-            const newDocRef = await addDoc(collection(db, "sharedContracts"), contractData);
-            currentContractId = newDocRef.id;
-        }
-
-        if (files.length > 0 && currentContractId) {
-            saveBtnText.textContent = `Enviando ${files.length} anexo(s)...`;
-            const uploadFile = httpsCallable(functions, 'uploadFile');
+            e.preventDefault();
+            const form = e.target;
+            const saveBtn = form.querySelector('#save-btn');
+            const saveBtnText = form.querySelector('#save-btn-text');
+            const saveSpinner = form.querySelector('#save-spinner');
             
-            // Mapeia as promessas de upload
-            const uploadPromises = Array.from(files).map(file => {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = async () => {
-                        try {
-                            const result = await uploadFile({ 
-                                fileContent: reader.result,
-                                fileName: file.name,
-                                contractId: currentContractId
-                            });
-                            resolve(result); // Resolve com o resultado da função
-                        } catch (error) {
-                            reject(error);
-                        }
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
+            saveBtn.disabled = true;
+            saveBtnText.textContent = 'Salvando...';
+            saveSpinner.classList.remove('hidden');
+
+            const id = form.querySelector('#contract-id').value;
+            const files = form.querySelector('#document-files').files;
+            
+            const installmentsContainer = form.querySelector('#installments-container');
+            const installmentDates = installmentsContainer.querySelectorAll('.installment-date');
+            const installmentValues = installmentsContainer.querySelectorAll('.installment-value');
+            const installments = [];
+            for (let i = 0; i < installmentDates.length; i++) {
+                installments.push({
+                    date: installmentDates[i].value,
+                    value: parseFloat(installmentValues[i].value) || 0
                 });
-            });
+            }
 
-            // Espera todos os uploads terminarem e captura os resultados
-            const uploadResults = await Promise.all(uploadPromises);
+            const contractData = {
+                title: form.querySelector('#title').value,
+                party: form.querySelector('#party').value,
+                status: form.querySelector('#status').value,
+                service_type: form.querySelector('#service_type').value,
+                cost_center: form.querySelector('#cost_center').value,
+                sector: form.querySelector('#sector').value,
+                startDate: form.querySelector('#start-date').value,
+                endDate: form.querySelector('#end-date').value,
+                value: parseFloat(form.querySelector('#value').value) || 0,
+                observations: form.querySelector('#observations').value,
+                lastModifiedAt: serverTimestamp(),
+                lastModifiedBy: { uid: currentUser.uid, email: currentUser.email },
+                installments: installments
+            };
+            
+            let currentContractId = id;
 
-            // MUDANÇA PRINCIPAL: Atualiza o estado local com os novos anexos
-            const contractIndex = allContracts.findIndex(c => c.id === currentContractId);
-            if (contractIndex !== -1) {
-                uploadResults.forEach(result => {
-                    if (result.data.success && result.data.newAttachment) {
-                        // Converte o serverTimestamp para um objeto de data local para evitar erros
-                        result.data.newAttachment.uploadedAt = new Date(); 
-                        allContracts[contractIndex].attachments.push(result.data.newAttachment);
+            try {
+                if (id) {
+                    await updateDoc(doc(db, "sharedContracts", id), contractData);
+                } else {
+                    contractData.createdAt = serverTimestamp();
+                    contractData.createdBy = { uid: currentUser.uid, email: currentUser.email };
+                    const newDocRef = await addDoc(collection(db, "sharedContracts"), contractData);
+                    currentContractId = newDocRef.id;
+                }
+
+                if (files.length > 0 && currentContractId) {
+                    saveBtnText.textContent = `Enviando ${files.length} anexo(s)...`;
+                    const uploadFile = httpsCallable(functions, 'uploadFile');
+                    
+                    const uploadPromises = Array.from(files).map(file => {
+                        return new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = async () => {
+                                try {
+                                    const result = await uploadFile({ 
+                                        fileContent: reader.result,
+                                        fileName: file.name,
+                                        contractId: currentContractId
+                                    });
+                                    resolve(result);
+                                } catch (error) {
+                                    reject(error);
+                                }
+                            };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                    });
+
+                    const uploadResults = await Promise.all(uploadPromises);
+
+                    const contractIndex = allContracts.findIndex(c => c.id === currentContractId);
+                    if (contractIndex !== -1) {
+                        uploadResults.forEach(result => {
+                            if (result.data.success && result.data.newAttachment) {
+                                result.data.newAttachment.uploadedAt = new Date(); 
+                                allContracts[contractIndex].attachments.push(result.data.newAttachment);
+                            }
+                        });
+                        applyFiltersAndRender(); 
                     }
-                });
-                // Redesenha a tela IMEDIATAMENTE com os dados atualizados
-                applyFiltersAndRender(); 
+                }
+                
+                closeContractModal();
+
+            } catch (error) {
+                console.error("Erro ao salvar contrato:", error);
+                showAlert('Erro ao Salvar', `Ocorreu um erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtnText.textContent = 'Salvar';
+                saveSpinner.classList.add('hidden');
             }
         }
-
-        if (!id && currentContractId) {
-            const newContractSnapshot = await getDoc(doc(db, "sharedContracts", currentContractId));
-            openContractModal('edit', { id: currentContractId, ...newContractSnapshot.data() });
-        } else {
-            closeContractModal();
-        }
-
-    } catch (error) {
-        console.error("Erro ao salvar contrato:", error);
-        showAlert('Erro ao Salvar', `Ocorreu um erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
-    } finally {
-        saveBtn.disabled = false;
-        saveBtnText.textContent = 'Salvar';
-        saveSpinner.classList.add('hidden');
-    }
-}
         
         function applyFiltersAndRender() {
             if (!allContracts) return;
@@ -538,6 +575,25 @@
             
             const observationsHTML = contract.observations ? `<p class="mt-3 pt-3 border-t border-gray-100 text-sm text-gray-700 whitespace-pre-wrap"><i class="fas fa-comment-dots w-5 mr-1 text-gray-400"></i>${contract.observations}</p>` : '';
 
+            let installmentsHTML = '';
+            if (contract.installments && contract.installments.length > 0) {
+                 installmentsHTML = `
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-2">
+                            <i class="fas fa-cash-register mr-1 text-gray-400"></i>Parcelamento:
+                        </h4>
+                        <div class="space-y-2 text-xs">
+                            ${contract.installments.map((inst, index) => `
+                                <div class="flex justify-between items-center">
+                                    <span>Parcela ${index + 1}:</span>
+                                    <span class="font-semibold">${inst.date ? new Date(inst.date + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(inst.value)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
             let attachmentsHTML = '';
             if (contract.attachments && contract.attachments.length > 0) {
                 attachmentsHTML = `
@@ -570,10 +626,11 @@
                         <p><i class="fas fa-briefcase w-5 mr-1 text-gray-400"></i>Tipo: <strong>${contract.service_type || 'N/A'}</strong></p>
                         <p><i class="fas fa-building w-5 mr-1 text-gray-400"></i>Setor: <strong>${contract.sector || 'N/A'}</strong></p>
                         <p><i class="fas fa-dollar-sign w-5 mr-1 text-gray-400"></i>C. Custo: <strong>${contract.cost_center || 'N/A'}</strong></p>
-                        <p><i class="fas fa-calendar-alt w-5 mr-1 text-gray-400"></i>Período: ${formattedStartDate} a ${formattedEndDate}</p>
+                        <p><i class="fas fa-calendar-alt w-5 mr-1 text-gray-400"></i>Vigência: ${formattedStartDate} a ${formattedEndDate}</p>
                         <p><i class="fas fa-coins w-5 mr-1 text-gray-400"></i>Valor: ${formattedValue}</p>
                     </div>
                     ${observationsHTML}
+                    ${installmentsHTML}
                     ${attachmentsHTML} 
                 </div>
                 <div class="flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100">
@@ -587,6 +644,37 @@
             return card;
         }
         
+        function generateInstallmentFields(existingInstallments = []) {
+            const container = document.getElementById('installments-container');
+            const number = document.getElementById('installments-number').valueAsNumber || 1;
+            container.innerHTML = '';
+
+            if (number > 0) { // Alterado para > 0 para sempre mostrar o container se houver parcelas
+                const title = document.createElement('h4');
+                title.className = 'text-md font-semibold text-gray-700 border-t pt-4 md:col-span-2';
+                title.textContent = 'Detalhes das Parcelas';
+                if(number > 1) container.appendChild(title);
+
+                for (let i = 0; i < number; i++) {
+                    const installmentData = existingInstallments[i] || {};
+                    const fieldSet = document.createElement('div');
+                    fieldSet.className = 'grid grid-cols-2 gap-4 p-3 bg-gray-50 rounded-md border md:col-span-2';
+                    
+                    fieldSet.innerHTML = `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Data Parcela ${i + 1}</label>
+                            <input type="date" class="installment-date w-full px-3 py-2 border border-gray-300 rounded-md" value="${installmentData.date || ''}" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Valor Parcela ${i + 1} (R$)</label>
+                            <input type="number" step="0.01" class="installment-value w-full px-3 py-2 border border-gray-300 rounded-md" value="${installmentData.value || ''}" required>
+                        </div>
+                    `;
+                    container.appendChild(fieldSet);
+                }
+            }
+        }
+
         function renderStagedAttachments() {
             const fileInput = document.getElementById('document-files');
             const stagedListDiv = document.getElementById('staged-attachments-list');
@@ -706,7 +794,6 @@
             doc.save("relatorio-contratos.pdf");
         }
         
-        // Inicializa a verificação de setup de admin assim que a página carrega
         setupInitialAuthScreen();
 
     </script>
