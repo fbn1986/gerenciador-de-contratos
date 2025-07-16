@@ -88,11 +88,11 @@
                         <div>
                             <select id="filter-process-status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="all">Todos os Status</option>
-                                <option>Proposta Registrada</option>
-                                <option>Documentação Validada</option>
-                                <option>Pagamento Validado</option>
-                                <option>Pronta para Assinatura</option>
-                                <option>Contrato Assinado e Concluído</option>
+                                <option>Minuta Registrada</option>
+                                <option>Minuta de Documentação Validada</option>
+                                <option>Minuta com Fluxo Aprovado</option>
+                                <option>Minuta em Processo de Assinatura</option>
+                                <option>Minuta Assinada e Concluída</option>
                             </select>
                         </div>
                         <div>
@@ -103,13 +103,13 @@
                                 <option>Custeio</option>
                             </select>
                         </div>
-                         <div class="mt-4">
-                             <select id="filter-sector" class="w-full md:w-1/4 bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                 <option value="all">Todos os Setores</option>
-                                 <option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option>
-                             </select>
-                         </div>
                     </div>
+                     <div class="mt-4">
+                         <select id="filter-sector" class="w-full md:w-1/4 bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                             <option value="all">Todos os Setores</option>
+                             <option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option>
+                         </select>
+                     </div>
                 </div>
 
                 <main id="contract-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></main>
@@ -123,27 +123,7 @@
     <div id="create-user-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4 p-6 relative animate-fade-in">
             <h2 class="text-2xl font-bold mb-6 text-gray-700">Criar Novo Usuário</h2>
-            <form id="create-user-form">
-                <div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
-                <div class="space-y-4">
-                    <input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    <input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    <select id="new-user-role" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
-                        <option value="" disabled selected>Selecione a Função</option>
-                        <option value="Registra Proposta">1 - Registra Proposta</option>
-                        <option value="Valida Documentos">2 - Valida os documentos da proposta (Janaina)</option>
-                        <option value="Valida Pagamento">3 - Valida o fluxo de pagamento (Financeiro)</option>
-                        <option value="Valida Assinatura">4 - Valida a proposta para assinatura (Presidente)</option>
-                        <option value="Assina Minuta">5 - Assina a Minuta (Jurídico)</option>
-                        <option value="Presidente">Presidente (Acesso Total)</option>
-                        <option value="admin">Admin (Acesso Total)</option>
-                    </select>
-                </div>
-                <div class="flex justify-end space-x-4 mt-8">
-                    <button type="button" id="cancel-create-user-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button>
-                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md">Criar</button>
-                </div>
-            </form>
+            <form id="create-user-form"><div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div><div class="space-y-4"><input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required><input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div class="flex justify-end space-x-4 mt-8"><button type="button" id="cancel-create-user-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button><button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md">Criar</button></div></form>
         </div>
     </div>
 
@@ -154,19 +134,7 @@
                 <input type="hidden" id="contract-id">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div class="md:col-span-2"><label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label><input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
-                    
-                    <div class="md:col-span-2">
-                        <label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label>
-                        <select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
-                            <option>Proposta Registrada</option>
-                            <option>Documentação Validada</option>
-                            <option>Pagamento Validado</option>
-                            <option>Pronta para Assinatura</option>
-                            <option>Contrato Assinado e Concluído</option>
-                        </select>
-                        <div id="modal-actions-container" class="mt-4 space-x-2"></div>
-                    </div>
-
+                    <div class="md:col-span-2"><label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label><select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Minuta Registrada</option><option>Minuta de Documentação Validada</option><option>Minuta com Fluxo Aprovado</option><option>Minuta em Processo de Assinatura</option><option>Minuta Assinada e Concluída</option></select></div>
                     <div class="md:col-span-2"><label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label><input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc."></div>
                     <div><label for="cost_center" class="block text-sm font-medium text-gray-600 mb-1">Centro de Custos</label><select id="cost_center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Institucional</option><option>Cidade do Samba</option><option>Custeio</option></select></div>
                     <div><label for="sector" class="block text-sm font-medium text-gray-600 mb-1">Setor</label><select id="sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option></select></div>
@@ -203,6 +171,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, getDoc, addDoc, updateDoc, serverTimestamp, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-functions.js";
         
         const { jsPDF } = window.jspdf;
 
@@ -218,48 +187,22 @@
         const primaryApp = initializeApp(firebaseConfig);
         const auth = getAuth(primaryApp);
         const db = getFirestore(primaryApp);
+        const functions = getFunctions(primaryApp, 'southamerica-east1');
 
         let currentUser = null;
-        let userRole = null;
+        let userRole = 'user';
         let allContracts = [];
         let unsubscribeFromContracts = null;
         let unsubscribeFromAttachments = null;
         let appInitialized = false;
 
         const PROCESS_STATUS_STYLES = {
-            'Proposta Registrada': { color: 'gray', icon: 'fa-pencil-alt' },
-            'Documentação Validada': { color: 'cyan', icon: 'fa-file-circle-check' },
-            'Pagamento Validado': { color: 'blue', icon: 'fa-hand-holding-dollar' },
-            'Pronta para Assinatura': { color: 'indigo', icon: 'fa-stamp' },
-            'Contrato Assinado e Concluído': { color: 'green', icon: 'fa-check-circle' }
+            'Minuta Registrada': { color: 'gray', icon: 'fa-pencil-alt' },
+            'Minuta de Documentação Validada': { color: 'blue', icon: 'fa-check' },
+            'Minuta com Fluxo Aprovado': { color: 'indigo', icon: 'fa-check-double' },
+            'Minuta em Processo de Assinatura': { color: 'orange', icon: 'fa-signature' },
+            'Minuta Assinada e Concluída': { color: 'green', icon: 'fa-check-circle' }
         };
-
-        // --- NOVA FUNÇÃO AUXILIAR PARA CHAMAR FUNÇÕES onRequest ---
-        async function callHttpsFunction(functionName, payload, region = 'southamerica-east1') {
-            if (!currentUser) {
-                throw new Error("Usuário não autenticado.");
-            }
-
-            const token = await currentUser.getIdToken(true);
-            const url = `https://${region}-gerenciador-de-contratos-cbc47.cloudfunctions.net/${functionName}`;
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ data: payload })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: { message: response.statusText } }));
-                throw new Error(errorData.error.message || 'Erro na chamada da função.');
-            }
-
-            const result = await response.json();
-            return result.data;
-        }
 
         function showAuthAlert(elId, message) {
             const errorEl = document.getElementById(elId);
@@ -293,9 +236,9 @@
             if (user) {
                 currentUser = user;
                 const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
-                userRole = roleDoc.exists() ? roleDoc.data().role : null;
+                userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
                 
-                document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole || 'Sem Função'})`;
+                document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole})`;
                 
                 if (userRole === 'admin') {
                     document.getElementById('create-user-btn').classList.remove('hidden');
@@ -313,7 +256,7 @@
                 }
             } else {
                 currentUser = null;
-                userRole = null;
+                userRole = 'user';
                 appInitialized = false;
                 if (unsubscribeFromContracts) unsubscribeFromContracts();
                 authView.classList.remove('hidden');
@@ -395,32 +338,21 @@
             }
         }
         
-        // ATUALIZADO: handleCreateUserFormSubmit usa a nova função auxiliar
         async function handleCreateUserFormSubmit(e) {
             e.preventDefault();
             const feedbackEl = document.getElementById('create-user-feedback');
             const email = e.target['new-user-email'].value;
             const password = e.target['new-user-password'].value;
-            const role = e.target['new-user-role'].value;
-
-            if (!role) {
-                feedbackEl.textContent = 'Erro: Por favor, selecione uma função.';
-                feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-red-100 text-red-800 block';
-                return;
-            }
             
             feedbackEl.textContent = 'Criando...';
             feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-yellow-100 text-yellow-800 block';
             
             try {
-                await callHttpsFunction('createUser', { email, password, role }); 
+                const createUser = httpsCallable(functions, 'createUser');
+                await createUser({ email, password, role: 'user' });
                 feedbackEl.textContent = 'Usuário criado com sucesso!';
                 feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-green-100 text-green-800 block';
                 e.target.reset();
-                setTimeout(() => { 
-                    document.getElementById('create-user-modal').classList.remove('flex');
-                    feedbackEl.classList.add('hidden');
-                }, 2000);
             } catch (error) {
                 feedbackEl.textContent = `Erro: ${error.message}`;
                 feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-red-100 text-red-800 block';
@@ -450,7 +382,7 @@
                 form.querySelector('#contract-id').value = contractData.id;
                 form.querySelector('#title').value = contractData.title || '';
                 form.querySelector('#party').value = contractData.party || '';
-                form.querySelector('#status').value = contractData.status || 'Proposta Registrada';
+                form.querySelector('#status').value = contractData.status || 'Minuta Registrada';
                 form.querySelector('#service_type').value = contractData.service_type || '';
                 form.querySelector('#cost_center').value = contractData.cost_center || 'Institucional';
                 form.querySelector('#sector').value = contractData.sector || 'RH';
@@ -475,68 +407,13 @@
                     renderAttachmentsList(attachments, contractData.id);
                 });
 
-                const statusSelect = form.querySelector('#status');
-                const modalActionsContainer = form.querySelector('#modal-actions-container');
-                modalActionsContainer.innerHTML = '';
-                
-                statusSelect.disabled = true;
-
-                const createActionButton = (text, newStatus, colorClass) => {
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.textContent = text;
-                    button.className = `px-4 py-2 text-white font-semibold rounded-md ${colorClass}`;
-                    button.onclick = () => {
-                        showAlert('Confirmar Alteração', `Deseja mesmo alterar o status para "${newStatus}"?`, [
-                            { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
-                            { 
-                                text: 'Confirmar', 
-                                class: 'px-4 py-2 bg-blue-600 text-white rounded-md', 
-                                onClick: async () => {
-                                    try {
-                                        await updateDoc(doc(db, "sharedContracts", contractData.id), { status: newStatus, lastModifiedAt: serverTimestamp() });
-                                        closeContractModal();
-                                    } catch (err) {
-                                        showAlert('Erro', 'Você não tem permissão para realizar esta ação.', [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
-                                    }
-                                }
-                            }
-                        ]);
-                    };
-                    modalActionsContainer.appendChild(button);
-                };
-
-                const currentStatus = contractData.status;
-                if (userRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') {
-                    createActionButton('Validar Documentação', 'Documentação Validada', 'bg-cyan-500 hover:bg-cyan-600');
-                }
-                if (userRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') {
-                    createActionButton('Validar Pagamento', 'Pagamento Validado', 'bg-blue-500 hover:bg-blue-600');
-                }
-                if (userRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') {
-                    createActionButton('Validar para Assinatura', 'Pronta para Assinatura', 'bg-indigo-500 hover:bg-indigo-600');
-                }
-                if (userRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura') {
-                    createActionButton('Assinar e Concluir', 'Contrato Assinado e Concluído', 'bg-green-500 hover:bg-green-600');
-                }
-                
-                if (userRole === 'admin' || userRole === 'Presidente') {
-                    statusSelect.disabled = false;
-                }
-
-            } else { // MODO 'ADD'
+            } else {
                 modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
                 form.querySelector('#contract-id').value = '';
                 attachmentsListDiv.innerHTML = '';
                 fileInput.disabled = false;
                 installmentsNumberInput.value = 1;
                 generateInstallmentFields();
-                
-                const statusSelect = form.querySelector('#status');
-                const modalActionsContainer = form.querySelector('#modal-actions-container');
-                statusSelect.value = 'Proposta Registrada';
-                statusSelect.disabled = true;
-                modalActionsContainer.innerHTML = '';
             }
             modal.classList.add('flex');
         };
@@ -553,7 +430,6 @@
             document.getElementById('contract-modal').classList.remove('flex');
         }
         
-        // ATUALIZADO: handleContractFormSubmit usa a nova função auxiliar para upload
         async function handleContractFormSubmit(e) {
             e.preventDefault();
             const form = e.target;
@@ -573,7 +449,10 @@
             const installmentValues = installmentsContainer.querySelectorAll('.installment-value');
             const installments = [];
             for (let i = 0; i < installmentDates.length; i++) {
-                installments.push({ date: installmentDates[i].value, value: parseFloat(installmentValues[i].value) || 0 });
+                installments.push({
+                    date: installmentDates[i].value,
+                    value: parseFloat(installmentValues[i].value) || 0
+                });
             }
 
             const contractData = {
@@ -606,13 +485,14 @@
 
                 if (files.length > 0 && currentContractId) {
                     saveBtnText.textContent = `Enviando ${files.length} anexo(s)...`;
+                    const uploadFile = httpsCallable(functions, 'uploadFile');
                     
                     const uploadPromises = Array.from(files).map(file => {
                         return new Promise((resolve, reject) => {
                             const reader = new FileReader();
                             reader.onload = async () => {
                                 try {
-                                    const result = await callHttpsFunction('uploadFile', { 
+                                    const result = await uploadFile({ 
                                         fileContent: reader.result,
                                         fileName: file.name,
                                         contractId: currentContractId
@@ -627,14 +507,25 @@
                         });
                     });
 
-                    await Promise.all(uploadPromises);
+                    const uploadResults = await Promise.all(uploadPromises);
+
+                    const contractIndex = allContracts.findIndex(c => c.id === currentContractId);
+                    if (contractIndex !== -1) {
+                        uploadResults.forEach(result => {
+                            if (result.data.success && result.data.newAttachment) {
+                                result.data.newAttachment.uploadedAt = new Date(); 
+                                allContracts[contractIndex].attachments.push(result.data.newAttachment);
+                            }
+                        });
+                        applyFiltersAndRender(); 
+                    }
                 }
                 
                 closeContractModal();
 
             } catch (error) {
                 console.error("Erro ao salvar contrato:", error);
-                showAlert('Erro ao Salvar', `Ocorreu um erro. Você pode não ter permissão para esta ação. Erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
+                showAlert('Erro ao Salvar', `Ocorreu um erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
             } finally {
                 saveBtn.disabled = false;
                 saveBtnText.textContent = 'Salvar';
@@ -676,8 +567,8 @@
             const card = document.createElement('div');
             card.className = 'bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between';
             
-            const processStatus = contract.status || 'Proposta Registrada';
-            const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Proposta Registrada'];
+            const processStatus = contract.status || 'Minuta Registrada';
+            const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Minuta Registrada'];
             const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contract.value || 0);
             const formattedStartDate = contract.startDate ? new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
             const formattedEndDate = contract.endDate ? new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
@@ -686,66 +577,164 @@
 
             let installmentsHTML = '';
             if (contract.installments && contract.installments.length > 0) {
-                 installmentsHTML = `...`; // Omitted for brevity, no changes here
+                 installmentsHTML = `
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-2">
+                            <i class="fas fa-cash-register mr-1 text-gray-400"></i>Parcelamento:
+                        </h4>
+                        <div class="space-y-2 text-xs">
+                            ${contract.installments.map((inst, index) => `
+                                <div class="flex justify-between items-center">
+                                    <span>Parcela ${index + 1}:</span>
+                                    <span class="font-semibold">${inst.date ? new Date(inst.date + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(inst.value)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
             }
 
             let attachmentsHTML = '';
             if (contract.attachments && contract.attachments.length > 0) {
-                 attachmentsHTML = `...`; // Omitted for brevity, no changes here
+                attachmentsHTML = `
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-2">
+                            <i class="fas fa-paperclip mr-1 text-gray-400"></i>Anexos:
+                        </h4>
+                        <div class="space-y-2">
+                            ${contract.attachments.map(att => `
+                                <a href="${att.documentURL}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-600 hover:underline text-sm p-1 rounded-md hover:bg-blue-50 transition-colors duration-200">
+                                    <i class="fas fa-file-pdf w-5 mr-2 text-red-500"></i>
+                                    <span class="truncate" title="${att.documentName}">${att.documentName}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
             }
 
-            card.innerHTML = `...`; // Omitted for brevity, no changes here
+            card.innerHTML = `
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-gray-800 pr-2">${contract.title}</h3>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-${processStyle.color}-100 text-${processStyle.color}-800 whitespace-nowrap">
+                            <i class="fas ${processStyle.icon} mr-1"></i> ${processStatus}
+                        </span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">com <strong>${contract.party}</strong></p>
+                    <div class="space-y-3 text-sm text-gray-700">
+                        <p><i class="fas fa-briefcase w-5 mr-1 text-gray-400"></i>Tipo: <strong>${contract.service_type || 'N/A'}</strong></p>
+                        <p><i class="fas fa-building w-5 mr-1 text-gray-400"></i>Setor: <strong>${contract.sector || 'N/A'}</strong></p>
+                        <p><i class="fas fa-dollar-sign w-5 mr-1 text-gray-400"></i>C. Custo: <strong>${contract.cost_center || 'N/A'}</strong></p>
+                        <p><i class="fas fa-calendar-alt w-5 mr-1 text-gray-400"></i>Vigência: ${formattedStartDate} a ${formattedEndDate}</p>
+                        <p><i class="fas fa-coins w-5 mr-1 text-gray-400"></i>Valor: ${formattedValue}</p>
+                    </div>
+                    ${observationsHTML}
+                    ${installmentsHTML}
+                    ${attachmentsHTML} 
+                </div>
+                <div class="flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100">
+                    <button data-action="edit" class="text-gray-500 hover:text-blue-600 transition-colors text-sm"><i class="fas fa-pencil-alt mr-1"></i>Gerenciar</button>
+                    <button data-action="delete" class="text-gray-500 hover:text-red-600 transition-colors text-sm"><i class="fas fa-trash-alt mr-1"></i>Deletar</button>
+                </div>
+            `;
             
-            const actionsContainer = document.createElement('div');
-            actionsContainer.className = 'flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100';
-
-            const canManage = userRole === 'admin' || 
-                              userRole === 'Presidente' ||
-                              (userRole === 'Registra Proposta' && contract.status === 'Proposta Registrada') ||
-                              (userRole === 'Valida Documentos' && contract.status === 'Proposta Registrada') ||
-                              (userRole === 'Valida Pagamento' && contract.status === 'Documentação Validada') ||
-                              (userRole === 'Valida Assinatura' && contract.status === 'Pagamento Validado') ||
-                              (userRole === 'Assina Minuta' && contract.status === 'Pronta para Assinatura');
-                              
-            if (canManage) {
-                const editButton = document.createElement('button');
-                editButton.innerHTML = `<i class="fas fa-pencil-alt mr-1"></i>Gerenciar / Avançar`;
-                editButton.className = "text-gray-500 hover:text-blue-600 transition-colors text-sm";
-                editButton.onclick = () => openContractModal('edit', contract);
-                actionsContainer.appendChild(editButton);
-            }
-
-            if (userRole === 'admin' || userRole === 'Presidente') {
-                const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = `<i class="fas fa-trash-alt mr-1"></i>Deletar`;
-                deleteButton.className = "text-gray-500 hover:text-red-600 transition-colors text-sm";
-                deleteButton.onclick = () => deleteContract(contract);
-                actionsContainer.appendChild(deleteButton);
-            }
-            
-            card.appendChild(actionsContainer);
+            card.querySelector('[data-action="edit"]').addEventListener('click', () => openContractModal('edit', contract));
+            card.querySelector('[data-action="delete"]').addEventListener('click', () => deleteContract(contract));
             return card;
         }
         
         function generateInstallmentFields(existingInstallments = []) {
-            // ... Omitted for brevity, no changes here
+            const container = document.getElementById('installments-container');
+            const number = document.getElementById('installments-number').valueAsNumber || 1;
+            container.innerHTML = '';
+
+            if (number > 0) { // Alterado para > 0 para sempre mostrar o container se houver parcelas
+                const title = document.createElement('h4');
+                title.className = 'text-md font-semibold text-gray-700 border-t pt-4 md:col-span-2';
+                title.textContent = 'Detalhes das Parcelas';
+                if(number > 1) container.appendChild(title);
+
+                for (let i = 0; i < number; i++) {
+                    const installmentData = existingInstallments[i] || {};
+                    const fieldSet = document.createElement('div');
+                    fieldSet.className = 'grid grid-cols-2 gap-4 p-3 bg-gray-50 rounded-md border md:col-span-2';
+                    
+                    fieldSet.innerHTML = `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Data Parcela ${i + 1}</label>
+                            <input type="date" class="installment-date w-full px-3 py-2 border border-gray-300 rounded-md" value="${installmentData.date || ''}" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Valor Parcela ${i + 1} (R$)</label>
+                            <input type="number" step="0.01" class="installment-value w-full px-3 py-2 border border-gray-300 rounded-md" value="${installmentData.value || ''}" required>
+                        </div>
+                    `;
+                    container.appendChild(fieldSet);
+                }
+            }
         }
 
         function renderStagedAttachments() {
-            // ... Omitted for brevity, no changes here
+            const fileInput = document.getElementById('document-files');
+            const stagedListDiv = document.getElementById('staged-attachments-list');
+            const files = fileInput.files;
+
+            stagedListDiv.innerHTML = '';
+
+            if (files.length > 0) {
+                const titleEl = document.createElement('p');
+                titleEl.className = 'text-xs font-semibold text-gray-500 mt-3 border-t pt-3';
+                titleEl.textContent = files.length > 1 ? 'Arquivos a serem enviados:' : 'Arquivo a ser enviado:';
+                stagedListDiv.appendChild(titleEl);
+            }
+
+            Array.from(files).forEach(file => {
+                const stagedFileHTML = `
+                    <div class="flex items-center justify-between bg-yellow-50 p-2 rounded-md border border-yellow-200">
+                        <div class="flex items-center text-sm truncate pr-2 text-yellow-800">
+                            <i class="fas fa-arrow-up-from-bracket mr-2"></i>
+                            <span class="truncate" title="${file.name}">${file.name}</span>
+                        </div>
+                    </div>
+                `;
+                stagedListDiv.insertAdjacentHTML('beforeend', stagedFileHTML);
+            });
         }
         
         function renderAttachmentsList(attachments, contractId) {
-            // ... Omitted for brevity, no changes here
+            const attachmentsListDiv = document.getElementById('attachments-list');
+            if (!attachments || attachments.length === 0) {
+                attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Nenhum anexo salvo.</p>';
+                return;
+            }
+            attachmentsListDiv.innerHTML = attachments.map(att => `
+                <div class="flex items-center justify-between bg-gray-50 p-2 rounded-md">
+                    <a href="${att.documentURL}" target="_blank" class="text-blue-600 hover:underline text-sm truncate pr-2" title="${att.documentName}">
+                        <i class="fas fa-file-pdf mr-1"></i>
+                        ${att.documentName}
+                    </a>
+                    <button type="button" data-contract-id="${contractId}" data-attachment-id="${att.id}" data-storage-path="${att.storagePath}" data-document-name="${att.documentName}" class="attachment-delete-btn text-gray-400 hover:text-red-600 transition-colors">
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            attachmentsListDiv.querySelectorAll('.attachment-delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const { contractId, attachmentId, storagePath, documentName } = e.currentTarget.dataset;
+                    handleDeleteAttachment(contractId, attachmentId, storagePath, documentName);
+                });
+            });
         }
         
-        // ATUALIZADO: handleDeleteAttachment usa a nova função auxiliar
         async function handleDeleteAttachment(contractId, attachmentId, storagePath, documentName) {
             showAlert('Confirmar Deleção de Anexo', `Deletar o arquivo "${documentName}"? Esta ação não pode ser desfeita.`, [
                 { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
                 { text: 'Deletar Anexo', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
                     try {
-                        await callHttpsFunction('deleteFile', { contractId, attachmentId, storagePath });
+                        const deleteFile = httpsCallable(functions, 'deleteFile');
+                        await deleteFile({ contractId, attachmentId, storagePath });
                     } catch (error) {
                         showAlert('Erro', `Não foi possível deletar o anexo: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
                     }
@@ -753,7 +742,6 @@
             ]);
         }
 
-        // ATUALIZADO: deleteContract usa a nova função auxiliar
         async function deleteContract(contract) {
             const attachmentsCollectionRef = collection(db, `sharedContracts/${contract.id}/anexos`);
             const attachmentsSnapshot = await getDocs(attachmentsCollectionRef);
@@ -763,9 +751,10 @@
                 { text: 'Deletar Contrato', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
                     try {
                         if (!attachmentsSnapshot.empty) {
+                            const deleteFile = httpsCallable(functions, 'deleteFile');
                             const deletePromises = attachmentsSnapshot.docs.map(docSnapshot => {
                                 const att = docSnapshot.data();
-                                return callHttpsFunction('deleteFile', { contractId: contract.id, attachmentId: docSnapshot.id, storagePath: att.storagePath });
+                                return deleteFile({ contractId: contract.id, attachmentId: docSnapshot.id, storagePath: att.storagePath });
                             });
                             await Promise.all(deletePromises);
                         }
@@ -779,7 +768,30 @@
         }
 
         function generatePDFReport() {
-            // ... Omitted for brevity, no changes here
+            const doc = new jsPDF({ orientation: 'landscape' });
+            const tableColumn = ["Título", "Parte Contratada", "Status", "Tipo de Serviço", "C. Custo", "Setor", "Início", "Término", "Valor (R$)", "Observações"];
+            const tableRows = [];
+            const filteredContracts = allContracts.filter(contract => {
+                const statusMatch = document.getElementById('filter-process-status').value === 'all' || contract.status === document.getElementById('filter-process-status').value;
+                const costCenterMatch = document.getElementById('filter-cost-center').value === 'all' || contract.cost_center === document.getElementById('filter-cost-center').value;
+                const sectorMatch = document.getElementById('filter-sector').value === 'all' || contract.sector === document.getElementById('filter-sector').value;
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+                const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || (contract.party && contract.party.toLowerCase().includes(searchTerm));
+                return statusMatch && costCenterMatch && sectorMatch && searchMatch;
+            });
+
+            filteredContracts.forEach(contract => {
+                tableRows.push([
+                    contract.title, contract.party, contract.status || 'N/A',
+                    contract.service_type || '', contract.cost_center || '', contract.sector || '',
+                    new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR'),
+                    new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR'),
+                    new Intl.NumberFormat('pt-BR').format(contract.value || 0),
+                    contract.observations || ''
+                ]);
+            });
+            doc.autoTable({ head: [tableColumn], body: tableRows, startY: 20, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [22, 160, 133] } });
+            doc.save("relatorio-contratos.pdf");
         }
         
         setupInitialAuthScreen();
