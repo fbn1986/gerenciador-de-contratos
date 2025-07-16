@@ -127,7 +127,6 @@
                 <div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
                 <div class="space-y-4">
                     <input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    <!-- CORREÇÃO: ID duplicado removido -->
                     <input type="password" id="new-user-password" placeholder="Senha provisória (mínimo 6 caracteres)" class="w-full px-3 py-2 border border-gray-300 rounded-md" required minlength="6">
                     <select id="new-user-role" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
                         <option value="" disabled selected>Selecione a Função</option>
@@ -216,16 +215,15 @@
           appId: "1:544353319340:web:070ac470eac63241f36209"
         };
 
-        const primaryApp = initializeApp(firebaseConfig);
-        const auth = getAuth(primaryApp);
-        const db = getFirestore(primaryApp);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
         let currentUser = null;
         let userRole = null;
         let allContracts = [];
         let unsubscribeFromContracts = null;
         let unsubscribeFromAttachments = null;
-        let appInitialized = false;
 
         const PROCESS_STATUS_STYLES = {
             'Proposta Registrada': { color: 'gray', icon: 'fa-pencil-alt' },
@@ -277,54 +275,43 @@
             alertModal.classList.add('flex');
         };
 
+        // --- LÓGICA DE CONTROLO PRINCIPAL ---
+
         onAuthStateChanged(auth, async (user) => {
             const authView = document.getElementById('auth-view');
             const appView = document.getElementById('app-view');
             
             if (user) {
+                currentUser = user;
                 try {
-                    currentUser = user;
                     const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
-
-                    if (roleDoc.exists) {
-                        userRole = roleDoc.data().role;
-                    } else {
-                        userRole = null;
-                    }
-                    
-                    document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole || 'Sem Função'})`;
-                    
-                    if (userRole === 'admin') {
-                        document.getElementById('create-user-btn').classList.remove('hidden');
-                    } else {
-                        document.getElementById('create-user-btn').classList.add('hidden');
-                    }
+                    userRole = roleDoc.exists ? roleDoc.data().role : null;
                     
                     authView.classList.remove('flex');
                     authView.classList.add('hidden');
                     appView.classList.remove('hidden');
-
-                    if (!appInitialized) {
-                        initializeAppListeners();
-                        appInitialized = true;
-                    }
+                    
+                    setupAppUI();
+                    setupAppListeners();
                 } catch (error) {
-                    console.error("Erro no onAuthStateChanged:", error);
-                    showAlert("Erro Crítico", `Ocorreu um erro ao carregar os dados: ${error.message}.`, [{ text: "OK", class: "px-4 py-2 bg-red-500 text-white rounded-md" }]);
+                    console.error("Erro ao buscar dados do usuário:", error);
+                    showAlert("Erro Crítico", "Não foi possível carregar os dados da sua conta.", []);
                     signOut(auth);
                 }
             } else {
                 currentUser = null;
                 userRole = null;
-                appInitialized = false;
                 if (unsubscribeFromContracts) unsubscribeFromContracts();
+                
                 authView.classList.remove('hidden');
                 authView.classList.add('flex');
                 appView.classList.add('hidden');
             }
         });
 
-        function initializeAuthListeners() {
+        // --- FUNÇÕES DE SETUP ---
+
+        function setupAuthListeners() {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
             document.getElementById('show-register').addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.add('hidden'); registerForm.classList.remove('hidden'); });
@@ -343,7 +330,16 @@
             setupInitialAuthScreen();
         }
 
-        function initializeAppListeners() {
+        function setupAppUI() {
+            document.getElementById('user-email').textContent = `Logado como: ${currentUser.email} (${userRole || 'Sem Função'})`;
+            if (userRole === 'admin') {
+                document.getElementById('create-user-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('create-user-btn').classList.add('hidden');
+            }
+        }
+
+        function setupAppListeners() {
             document.getElementById('logoutBtn').onclick = () => signOut(auth);
             document.getElementById('addContractBtn').addEventListener('click', () => openContractModal('add'));
             document.getElementById('report-btn').addEventListener('click', generatePDFReport);
@@ -386,6 +382,8 @@
                 registerLinkContainer.style.display = 'block'; 
             }
         }
+
+        // --- FUNÇÕES DE LÓGICA DE NEGÓCIO ---
 
         async function handleRegisterFormSubmit(e) {
             e.preventDefault();
