@@ -86,13 +86,14 @@
                             </div>
                         </div>
                         <div>
+                            <!-- FILTRO DE STATUS ATUALIZADO -->
                             <select id="filter-process-status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="all">Todos os Status</option>
-                                <option>Minuta Registrada</option>
-                                <option>Minuta de Documentação Validada</option>
-                                <option>Minuta com Fluxo Aprovado</option>
-                                <option>Minuta em Processo de Assinatura</option>
-                                <option>Minuta Assinada e Concluída</option>
+                                <option>Proposta Registrada</option>
+                                <option>Documentação Validada</option>
+                                <option>Pagamento Validado</option>
+                                <option>Pronta para Assinatura</option>
+                                <option>Contrato Assinado e Concluído</option>
                             </select>
                         </div>
                         <div>
@@ -120,6 +121,7 @@
         </div>
     </div>
     
+    <!-- MODAL DE CRIAÇÃO DE USUÁRIO - ATUALIZADO -->
     <div id="create-user-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4 p-6 relative animate-fade-in">
             <h2 class="text-2xl font-bold mb-6 text-gray-700">Criar Novo Usuário</h2>
@@ -129,14 +131,16 @@
                     <input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
                     <input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
                     
+                    <!-- CAMPO DE FUNÇÃO ATUALIZADO COM NOMES DESCRITIVOS -->
                     <select id="new-user-role" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
                         <option value="" disabled selected>Selecione a Função</option>
-                        <option value="Registador">Registador</option>
-                        <option value="Validador">Validador</option>
-                        <option value="Aprovador">Aprovador</option>
-                        <option value="Finalizador">Finalizador</option>
-                        <option value="Presidente">Presidente</option>
-                        <option value="admin">Admin</option>
+                        <option value="Registra Proposta">1 - Registra Proposta</option>
+                        <option value="Valida Documentos">2 - Valida os documentos da proposta (Janaina)</option>
+                        <option value="Valida Pagamento">3 - Valida o fluxo de pagamento (Financeiro)</option>
+                        <option value="Valida Assinatura">4 - Valida a proposta para assinatura (Presidente)</option>
+                        <option value="Assina Minuta">5 - Assina a Minuta (Jurídico)</option>
+                        <option value="Presidente">Presidente (Acesso Total)</option>
+                        <option value="admin">Admin (Acesso Total)</option>
                     </select>
                 </div>
                 <div class="flex justify-end space-x-4 mt-8">
@@ -147,6 +151,7 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONTRATO - ATUALIZADO -->
     <div id="contract-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-40">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg mx-4 p-6 relative animate-fade-in modal-content">
             <h2 id="modal-title" class="text-2xl font-bold mb-6 text-gray-700">Adicionar Novo Contrato</h2>
@@ -155,14 +160,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div class="md:col-span-2"><label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label><input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
                     
+                    <!-- ÁREA DO STATUS ATUALIZADA -->
                     <div class="md:col-span-2">
                         <label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label>
                         <select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
-                            <option>Minuta Registrada</option>
-                            <option>Minuta de Documentação Validada</option>
-                            <option>Minuta com Fluxo Aprovado</option>
-                            <option>Minuta em Processo de Assinatura</option>
-                            <option>Minuta Assinada e Concluída</option>
+                            <option>Proposta Registrada</option>
+                            <option>Documentação Validada</option>
+                            <option>Pagamento Validado</option>
+                            <option>Pronta para Assinatura</option>
+                            <option>Contrato Assinado e Concluído</option>
                         </select>
                         <div id="modal-actions-container" class="mt-4 space-x-2"></div>
                     </div>
@@ -207,8 +213,6 @@
         
         const { jsPDF } = window.jspdf;
 
-        // ATENÇÃO: É uma boa prática não expor a API Key diretamente no código.
-        // Considere restringir a chave no painel do Firebase para o domínio do seu site.
         const firebaseConfig = {
           apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
           authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
@@ -223,20 +227,20 @@
         const db = getFirestore(primaryApp);
         const functions = getFunctions(primaryApp, 'southamerica-east1');
 
-        // VARIÁVEIS GLOBAIS MODIFICADAS
         let currentUser = null;
-        let userRole = null; // Agora começa como nulo
+        let userRole = null;
         let allContracts = [];
         let unsubscribeFromContracts = null;
         let unsubscribeFromAttachments = null;
         let appInitialized = false;
 
+        // ESTILOS DE STATUS ATUALIZADOS
         const PROCESS_STATUS_STYLES = {
-            'Minuta Registrada': { color: 'gray', icon: 'fa-pencil-alt' },
-            'Minuta de Documentação Validada': { color: 'blue', icon: 'fa-check' },
-            'Minuta com Fluxo Aprovado': { color: 'indigo', icon: 'fa-check-double' },
-            'Minuta em Processo de Assinatura': { color: 'orange', icon: 'fa-signature' },
-            'Minuta Assinada e Concluída': { color: 'green', icon: 'fa-check-circle' }
+            'Proposta Registrada': { color: 'gray', icon: 'fa-pencil-alt' },
+            'Documentação Validada': { color: 'cyan', icon: 'fa-file-circle-check' },
+            'Pagamento Validado': { color: 'blue', icon: 'fa-hand-holding-dollar' },
+            'Pronta para Assinatura': { color: 'indigo', icon: 'fa-stamp' },
+            'Contrato Assinado e Concluído': { color: 'green', icon: 'fa-check-circle' }
         };
 
         function showAuthAlert(elId, message) {
@@ -270,11 +274,10 @@
 
             if (user) {
                 currentUser = user;
-                // LÓGICA DE BUSCAR FUNÇÃO MANTIDA
                 const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
-                userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
+                userRole = roleDoc.exists() ? roleDoc.data().role : null;
                 
-                document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole})`;
+                document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole || 'Sem Função'})`;
                 
                 if (userRole === 'admin') {
                     document.getElementById('create-user-btn').classList.remove('hidden');
@@ -374,13 +377,12 @@
             }
         }
         
-        // FUNÇÃO DE CRIAR USUÁRIO - MODIFICADA
         async function handleCreateUserFormSubmit(e) {
             e.preventDefault();
             const feedbackEl = document.getElementById('create-user-feedback');
             const email = e.target['new-user-email'].value;
             const password = e.target['new-user-password'].value;
-            const role = e.target['new-user-role'].value; // Captura a nova função
+            const role = e.target['new-user-role'].value;
 
             if (!role) {
                 feedbackEl.textContent = 'Erro: Por favor, selecione uma função.';
@@ -393,7 +395,6 @@
             
             try {
                 const createUser = httpsCallable(functions, 'createUser');
-                // Agora enviamos a função selecionada
                 await createUser({ email, password, role: role }); 
                 feedbackEl.textContent = 'Usuário criado com sucesso!';
                 feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-green-100 text-green-800 block';
@@ -408,7 +409,7 @@
             }
         }
         
-        // FUNÇÃO DE ABRIR MODAL - MODIFICADA
+        // FUNÇÃO DE ABRIR MODAL - ATUALIZADA
         async function openContractModal(mode = 'add', contractData = {}) {
             const modal = document.getElementById('contract-modal');
             const form = modal.querySelector('#contract-form');
@@ -432,7 +433,7 @@
                 form.querySelector('#contract-id').value = contractData.id;
                 form.querySelector('#title').value = contractData.title || '';
                 form.querySelector('#party').value = contractData.party || '';
-                form.querySelector('#status').value = contractData.status || 'Minuta Registrada';
+                form.querySelector('#status').value = contractData.status || 'Proposta Registrada';
                 form.querySelector('#service_type').value = contractData.service_type || '';
                 form.querySelector('#cost_center').value = contractData.cost_center || 'Institucional';
                 form.querySelector('#sector').value = contractData.sector || 'RH';
@@ -457,7 +458,7 @@
                     renderAttachmentsList(attachments, contractData.id);
                 });
 
-                // --- INÍCIO DA NOVA LÓGICA DE PERMISSÃO NO MODAL ---
+                // LÓGICA DE PERMISSÃO NO MODAL - ATUALIZADA
                 const statusSelect = form.querySelector('#status');
                 const modalActionsContainer = form.querySelector('#modal-actions-container');
                 modalActionsContainer.innerHTML = '';
@@ -490,25 +491,22 @@
                 };
 
                 const currentStatus = contractData.status;
-                if (userRole === 'Validador' && currentStatus === 'Minuta Registrada') {
-                    createActionButton('Validar Documentação', 'Minuta de Documentação Validada', 'bg-blue-500 hover:bg-blue-600');
+                if (userRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') {
+                    createActionButton('Validar Documentação', 'Documentação Validada', 'bg-cyan-500 hover:bg-cyan-600');
                 }
-                if (userRole === 'Aprovador' && currentStatus === 'Minuta de Documentação Validada') {
-                    createActionButton('Aprovar Fluxo', 'Minuta com Fluxo Aprovado', 'bg-indigo-500 hover:bg-indigo-600');
+                if (userRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') {
+                    createActionButton('Validar Pagamento', 'Pagamento Validado', 'bg-blue-500 hover:bg-blue-600');
                 }
-                if (userRole === 'Finalizador') {
-                    if (currentStatus === 'Minuta com Fluxo Aprovado') {
-                        createActionButton('Iniciar Assinatura', 'Minuta em Processo de Assinatura', 'bg-orange-500 hover:bg-orange-600');
-                    }
-                    if (currentStatus === 'Minuta em Processo de Assinatura') {
-                        createActionButton('Concluir Assinatura', 'Minuta Assinada e Concluída', 'bg-green-500 hover:bg-green-600');
-                    }
+                if (userRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') {
+                    createActionButton('Validar para Assinatura', 'Pronta para Assinatura', 'bg-indigo-500 hover:bg-indigo-600');
+                }
+                if (userRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura') {
+                    createActionButton('Assinar e Concluir', 'Contrato Assinado e Concluído', 'bg-green-500 hover:bg-green-600');
                 }
                 
                 if (userRole === 'admin' || userRole === 'Presidente') {
                     statusSelect.disabled = false;
                 }
-                // --- FIM DA NOVA LÓGICA DE PERMISSÃO ---
 
             } else { // MODO 'ADD'
                 modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
@@ -520,7 +518,7 @@
                 
                 const statusSelect = form.querySelector('#status');
                 const modalActionsContainer = form.querySelector('#modal-actions-container');
-                statusSelect.value = 'Minuta Registrada'; // Status inicial fixo
+                statusSelect.value = 'Proposta Registrada'; // Status inicial fixo
                 statusSelect.disabled = true;
                 modalActionsContainer.innerHTML = '';
             }
@@ -567,7 +565,7 @@
             const contractData = {
                 title: form.querySelector('#title').value,
                 party: form.querySelector('#party').value,
-                status: form.querySelector('#status').value, // Admin e Presidente ainda usam este campo
+                status: form.querySelector('#status').value,
                 service_type: form.querySelector('#service_type').value,
                 cost_center: form.querySelector('#cost_center').value,
                 sector: form.querySelector('#sector').value,
@@ -616,18 +614,7 @@
                         });
                     });
 
-                    const uploadResults = await Promise.all(uploadPromises);
-
-                    const contractIndex = allContracts.findIndex(c => c.id === currentContractId);
-                    if (contractIndex !== -1) {
-                        uploadResults.forEach(result => {
-                            if (result.data.success && result.data.newAttachment) {
-                                result.data.newAttachment.uploadedAt = new Date(); 
-                                allContracts[contractIndex].attachments.push(result.data.newAttachment);
-                            }
-                        });
-                        applyFiltersAndRender(); 
-                    }
+                    await Promise.all(uploadPromises);
                 }
                 
                 closeContractModal();
@@ -672,13 +659,13 @@
             }
         }
 
-        // FUNÇÃO DE CRIAR CARD - MODIFICADA
+        // FUNÇÃO DE CRIAR CARD - ATUALIZADA
         function createContractCard(contract) {
             const card = document.createElement('div');
             card.className = 'bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between';
             
-            const processStatus = contract.status || 'Minuta Registrada';
-            const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Minuta Registrada'];
+            const processStatus = contract.status || 'Proposta Registrada';
+            const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Proposta Registrada'];
             const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contract.value || 0);
             const formattedStartDate = contract.startDate ? new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
             const formattedEndDate = contract.endDate ? new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
@@ -745,16 +732,16 @@
                 </div>
             `;
             
-            // LÓGICA DE BOTÕES MODIFICADA
             const actionsContainer = document.createElement('div');
             actionsContainer.className = 'flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100';
 
             const canManage = userRole === 'admin' || 
                               userRole === 'Presidente' ||
-                              (userRole === 'Registador' && contract.status === 'Minuta Registrada') ||
-                              (userRole === 'Validador' && contract.status === 'Minuta Registrada') ||
-                              (userRole === 'Aprovador' && contract.status === 'Minuta de Documentação Validada') ||
-                              (userRole === 'Finalizador' && (contract.status === 'Minuta com Fluxo Aprovado' || contract.status === 'Minuta em Processo de Assinatura'));
+                              (userRole === 'Registra Proposta' && contract.status === 'Proposta Registrada') ||
+                              (userRole === 'Valida Documentos' && contract.status === 'Proposta Registrada') ||
+                              (userRole === 'Valida Pagamento' && contract.status === 'Documentação Validada') ||
+                              (userRole === 'Valida Assinatura' && contract.status === 'Pagamento Validado') ||
+                              (userRole === 'Assina Minuta' && contract.status === 'Pronta para Assinatura');
                               
             if (canManage) {
                 const editButton = document.createElement('button');
