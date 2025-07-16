@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Contratos (Modo de Depuração)</title>
+    <title>Gerenciador de Contratos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -20,8 +20,7 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <!-- A TELA DE LOGIN ESTÁ OCULTA NESTE MODO -->
-    <div id="auth-view" class="hidden items-center justify-center min-h-screen">
+    <div id="auth-view" class="flex items-center justify-center min-h-screen">
         <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
             <form id="login-form">
                 <h2 class="text-2xl font-bold text-center text-gray-700">Login</h2>
@@ -201,9 +200,8 @@
     </div>
 
     <script type="module">
-        // IMPORTAÇÃO ATUALIZADA para incluir signInAnonymously
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, getDoc, addDoc, updateDoc, serverTimestamp, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         const { jsPDF } = window.jspdf;
@@ -278,55 +276,87 @@
             alertModal.classList.add('flex');
         };
 
-        // FUNÇÃO onAuthStateChanged MODIFICADA PARA LOGIN ANÔNIMO
+        // FUNÇÃO onAuthStateChanged COM DEPURAÇÃO DETALHADA
         onAuthStateChanged(auth, async (user) => {
+            console.log("onAuthStateChanged disparado. Usuário:", user ? user.email : 'null');
+            const authView = document.getElementById('auth-view');
             const appView = document.getElementById('app-view');
             
             if (user) {
-                // Usuário está logado (seja normal ou anônimo)
-                currentUser = user;
+                try {
+                    console.log("Usuário detectado. Tentando mostrar a aplicação...");
+                    currentUser = user;
 
-                if (user.isAnonymous) {
-                    // Se for anônimo, força o papel de admin para depuração
-                    userRole = 'admin';
-                    document.getElementById('user-email').textContent = `Logado em Modo de Depuração (Anônimo)`;
-                } else {
-                    // Se for um usuário real, busca o papel no Firestore
+                    console.log("Buscando a função do usuário no Firestore...");
                     const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
-                    userRole = roleDoc.exists ? roleDoc.data().role : 'user'; // Fallback para 'user'
-                    document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole})`;
-                }
+                    console.log("Documento de função recebido do Firestore.");
 
-                // Mostra o botão de criar usuário se for admin
-                if (userRole === 'admin') {
-                    document.getElementById('create-user-btn').classList.remove('hidden');
-                } else {
-                    document.getElementById('create-user-btn').classList.add('hidden');
-                }
+                    // CORREÇÃO: .exists é uma propriedade, não uma função.
+                    if (roleDoc.exists) {
+                        console.log("O documento de função existe.");
+                        userRole = roleDoc.data().role;
+                        console.log("A função do usuário é:", userRole);
+                    } else {
+                        console.warn("O documento de função NÃO existe para este usuário.");
+                        userRole = null;
+                    }
+                    
+                    document.getElementById('user-email').textContent = `Logado como: ${user.email} (${userRole || 'Sem Função'})`;
+                    
+                    if (userRole === 'admin') {
+                        document.getElementById('create-user-btn').classList.remove('hidden');
+                    } else {
+                        document.getElementById('create-user-btn').classList.add('hidden');
+                    }
+                    
+                    console.log("Escondendo a tela de autenticação e mostrando a aplicação.");
+                    authView.classList.remove('flex');
+                    authView.classList.add('hidden');
+                    appView.classList.remove('hidden');
 
-                // Mostra a aplicação
-                appView.classList.remove('hidden');
-
-                // Inicializa os listeners se ainda não foram
-                if (!appInitialized) {
-                    initializeAppListeners();
-                    appInitialized = true;
+                    if (!appInitialized) {
+                        console.log("Inicializando os listeners da aplicação pela primeira vez.");
+                        initializeAppListeners();
+                        appInitialized = true;
+                    }
+                    console.log("Processamento do usuário concluído com sucesso.");
+                } catch (error) {
+                    console.error(">>> ERRO CRÍTICO dentro do bloco if(user) do onAuthStateChanged:", error);
+                    showAlert("Erro Crítico", `Ocorreu um erro ao carregar os seus dados: ${error.message}. Por favor, tente limpar a cache do navegador ou contate o suporte.`, [{ text: "OK", class: "px-4 py-2 bg-red-500 text-white rounded-md" }]);
+                    // Força o logout para evitar que o usuário fique preso num estado quebrado
+                    signOut(auth);
                 }
             } else {
-                // Ninguém está logado, tenta fazer o login anônimo
-                console.log("Nenhum usuário. Tentando login anônimo...");
-                try {
-                    await signInAnonymously(auth);
-                    console.log("Login anônimo bem-sucedido.");
-                } catch (error) {
-                    console.error("Erro no login anônimo:", error);
-                    showAlert("Erro Crítico", "Não foi possível iniciar a sessão de depuração. Verifique o console para mais detalhes.", []);
-                }
+                console.log("Nenhum usuário detectado. Mostrando a tela de autenticação.");
+                currentUser = null;
+                userRole = null;
+                appInitialized = false;
+                if (unsubscribeFromContracts) unsubscribeFromContracts();
+                authView.classList.remove('hidden');
+                authView.classList.add('flex');
+                appView.classList.add('hidden');
             }
         });
 
+        async function setupInitialAuthScreen() {
+            const registerLinkContainer = document.getElementById('register-link-container');
+            try {
+                const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
+                // CORREÇÃO: .exists é uma propriedade, não uma função.
+                registerLinkContainer.style.display = adminDoc.exists ? 'none' : 'block';
+            } catch (e) {
+                console.error("Erro ao verificar setup do admin:", e);
+                registerLinkContainer.style.display = 'block'; 
+            }
+        }
+
         function initializeAppListeners() {
-            // Esta função não precisa mais do código de login/register, mas mantém os outros listeners
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            document.getElementById('show-register').addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.add('hidden'); registerForm.classList.remove('hidden'); });
+            document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); registerForm.classList.add('hidden'); loginForm.classList.remove('hidden'); });
+            loginForm.addEventListener('submit', async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value); } catch (error) { showAuthAlert('login-error', 'Email ou senha inválidos.'); } });
+            registerForm.addEventListener('submit', handleRegisterFormSubmit);
             document.getElementById('logoutBtn').onclick = () => signOut(auth);
             document.getElementById('addContractBtn').addEventListener('click', () => openContractModal('add'));
             document.getElementById('report-btn').addEventListener('click', generatePDFReport);
@@ -341,7 +371,6 @@
             document.getElementById('create-user-btn').onclick = () => createUserModal.classList.add('flex');
             document.getElementById('cancel-create-user-btn').onclick = () => createUserModal.classList.remove('flex');
             document.getElementById('create-user-form').addEventListener('submit', handleCreateUserFormSubmit);
-            
             const contractsQuery = query(collection(db, "sharedContracts"), orderBy("lastModifiedAt", "desc"));
             unsubscribeFromContracts = onSnapshot(contractsQuery, async (snapshot) => {
                 const contractsFromDB = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -357,6 +386,24 @@
                 console.error("Erro no listener de contratos:", error);
                 document.getElementById('loading-message').innerHTML = `<p class="text-red-600 p-4 rounded-md bg-red-100">Erro de permissão ao carregar. Verifique as regras do Firestore.</p>`;
             });
+        }
+        
+        async function handleRegisterFormSubmit(e) {
+            e.preventDefault();
+            try {
+                const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
+                // CORREÇÃO: .exists é uma propriedade, não uma função.
+                if (adminDoc.exists) {
+                    showAuthAlert('register-error', 'A conta de Admin já foi criada.');
+                    return;
+                }
+                await createUserWithEmailAndPassword(auth, e.target['register-email'].value, e.target['register-password'].value);
+            } catch (error) {
+                let message = 'Erro ao criar conta.';
+                if (error.code === 'auth/email-already-in-use') message = 'Este e-mail já está em uso.';
+                else if (error.code === 'auth/weak-password') message = 'A senha precisa ter no mínimo 6 caracteres.';
+                showAuthAlert('register-error', message);
+            }
         }
         
         async function handleCreateUserFormSubmit(e) {
