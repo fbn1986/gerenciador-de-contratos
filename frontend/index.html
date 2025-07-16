@@ -276,27 +276,18 @@
             alertModal.classList.add('flex');
         };
 
-        // FUNÇÃO onAuthStateChanged CORRIGIDA
         onAuthStateChanged(auth, async (user) => {
-            console.log("onAuthStateChanged disparado. Usuário:", user ? user.email : 'null');
             const authView = document.getElementById('auth-view');
             const appView = document.getElementById('app-view');
             
             if (user) {
                 try {
-                    console.log("Usuário detectado. Tentando mostrar a aplicação...");
                     currentUser = user;
-
-                    console.log("Buscando a função do usuário no Firestore...");
                     const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
-                    console.log("Documento de função recebido do Firestore.");
 
                     if (roleDoc.exists) {
-                        console.log("O documento de função existe.");
                         userRole = roleDoc.data().role;
-                        console.log("A função do usuário é:", userRole);
                     } else {
-                        console.warn("O documento de função NÃO existe para este usuário.");
                         userRole = null;
                     }
                     
@@ -308,24 +299,20 @@
                         document.getElementById('create-user-btn').classList.add('hidden');
                     }
                     
-                    console.log("Escondendo a tela de autenticação e mostrando a aplicação.");
                     authView.classList.remove('flex');
                     authView.classList.add('hidden');
                     appView.classList.remove('hidden');
 
                     if (!appInitialized) {
-                        console.log("Inicializando os listeners da aplicação pela primeira vez.");
                         initializeAppListeners();
                         appInitialized = true;
                     }
-                    console.log("Processamento do usuário concluído com sucesso.");
                 } catch (error) {
-                    console.error(">>> ERRO CRÍTICO dentro do bloco if(user) do onAuthStateChanged:", error);
-                    showAlert("Erro Crítico", `Ocorreu um erro ao carregar os seus dados: ${error.message}. Por favor, tente limpar a cache do navegador ou contate o suporte.`, [{ text: "OK", class: "px-4 py-2 bg-red-500 text-white rounded-md" }]);
+                    console.error("Erro no onAuthStateChanged:", error);
+                    showAlert("Erro Crítico", `Ocorreu um erro ao carregar os dados: ${error.message}.`, [{ text: "OK", class: "px-4 py-2 bg-red-500 text-white rounded-md" }]);
                     signOut(auth);
                 }
             } else {
-                console.log("Nenhum usuário detectado. Mostrando a tela de autenticação.");
                 currentUser = null;
                 userRole = null;
                 appInitialized = false;
@@ -336,7 +323,6 @@
             }
         });
 
-        // NOVA FUNÇÃO para inicializar apenas os listeners de autenticação
         function initializeAuthListeners() {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
@@ -345,12 +331,9 @@
             
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                console.log("Botão 'Entrar' clicado.");
                 try {
                     await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value);
-                    console.log("signInWithEmailAndPassword bem-sucedido.");
                 } catch (error) {
-                    console.error("Erro no signInWithEmailAndPassword:", error);
                     showAuthAlert('login-error', 'Email ou senha inválidos.');
                 }
             });
@@ -360,7 +343,6 @@
         }
 
         function initializeAppListeners() {
-            // Esta função agora só contém listeners que precisam do usuário logado
             document.getElementById('logoutBtn').onclick = () => signOut(auth);
             document.getElementById('addContractBtn').addEventListener('click', () => openContractModal('add'));
             document.getElementById('report-btn').addEventListener('click', generatePDFReport);
