@@ -276,7 +276,7 @@
             alertModal.classList.add('flex');
         };
 
-        // FUNÇÃO onAuthStateChanged COM DEPURAÇÃO DETALHADA
+        // FUNÇÃO onAuthStateChanged CORRIGIDA
         onAuthStateChanged(auth, async (user) => {
             console.log("onAuthStateChanged disparado. Usuário:", user ? user.email : 'null');
             const authView = document.getElementById('auth-view');
@@ -291,7 +291,6 @@
                     const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
                     console.log("Documento de função recebido do Firestore.");
 
-                    // CORREÇÃO: .exists é uma propriedade, não uma função.
                     if (roleDoc.exists) {
                         console.log("O documento de função existe.");
                         userRole = roleDoc.data().role;
@@ -323,7 +322,6 @@
                 } catch (error) {
                     console.error(">>> ERRO CRÍTICO dentro do bloco if(user) do onAuthStateChanged:", error);
                     showAlert("Erro Crítico", `Ocorreu um erro ao carregar os seus dados: ${error.message}. Por favor, tente limpar a cache do navegador ou contate o suporte.`, [{ text: "OK", class: "px-4 py-2 bg-red-500 text-white rounded-md" }]);
-                    // Força o logout para evitar que o usuário fique preso num estado quebrado
                     signOut(auth);
                 }
             } else {
@@ -338,25 +336,31 @@
             }
         });
 
-        async function setupInitialAuthScreen() {
-            const registerLinkContainer = document.getElementById('register-link-container');
-            try {
-                const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
-                // CORREÇÃO: .exists é uma propriedade, não uma função.
-                registerLinkContainer.style.display = adminDoc.exists ? 'none' : 'block';
-            } catch (e) {
-                console.error("Erro ao verificar setup do admin:", e);
-                registerLinkContainer.style.display = 'block'; 
-            }
-        }
-
-        function initializeAppListeners() {
+        // NOVA FUNÇÃO para inicializar apenas os listeners de autenticação
+        function initializeAuthListeners() {
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
             document.getElementById('show-register').addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.add('hidden'); registerForm.classList.remove('hidden'); });
             document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); registerForm.classList.add('hidden'); loginForm.classList.remove('hidden'); });
-            loginForm.addEventListener('submit', async (e) => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value); } catch (error) { showAuthAlert('login-error', 'Email ou senha inválidos.'); } });
+            
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log("Botão 'Entrar' clicado.");
+                try {
+                    await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value);
+                    console.log("signInWithEmailAndPassword bem-sucedido.");
+                } catch (error) {
+                    console.error("Erro no signInWithEmailAndPassword:", error);
+                    showAuthAlert('login-error', 'Email ou senha inválidos.');
+                }
+            });
+            
             registerForm.addEventListener('submit', handleRegisterFormSubmit);
+            setupInitialAuthScreen();
+        }
+
+        function initializeAppListeners() {
+            // Esta função agora só contém listeners que precisam do usuário logado
             document.getElementById('logoutBtn').onclick = () => signOut(auth);
             document.getElementById('addContractBtn').addEventListener('click', () => openContractModal('add'));
             document.getElementById('report-btn').addEventListener('click', generatePDFReport);
@@ -371,6 +375,7 @@
             document.getElementById('create-user-btn').onclick = () => createUserModal.classList.add('flex');
             document.getElementById('cancel-create-user-btn').onclick = () => createUserModal.classList.remove('flex');
             document.getElementById('create-user-form').addEventListener('submit', handleCreateUserFormSubmit);
+            
             const contractsQuery = query(collection(db, "sharedContracts"), orderBy("lastModifiedAt", "desc"));
             unsubscribeFromContracts = onSnapshot(contractsQuery, async (snapshot) => {
                 const contractsFromDB = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -388,11 +393,21 @@
             });
         }
         
+        async function setupInitialAuthScreen() {
+            const registerLinkContainer = document.getElementById('register-link-container');
+            try {
+                const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
+                registerLinkContainer.style.display = adminDoc.exists ? 'none' : 'block';
+            } catch (e) {
+                console.error("Erro ao verificar setup do admin:", e);
+                registerLinkContainer.style.display = 'block'; 
+            }
+        }
+
         async function handleRegisterFormSubmit(e) {
             e.preventDefault();
             try {
                 const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
-                // CORREÇÃO: .exists é uma propriedade, não uma função.
                 if (adminDoc.exists) {
                     showAuthAlert('register-error', 'A conta de Admin já foi criada.');
                     return;
@@ -887,6 +902,9 @@
             doc.save("relatorio-contratos.pdf");
         }
         
+        // CHAMA A INICIALIZAÇÃO DOS LISTENERS DE AUTENTICAÇÃO
+        initializeAuthListeners();
+
     </script>
 </body>
 </html>
