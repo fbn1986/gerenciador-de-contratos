@@ -103,13 +103,13 @@
                                 <option>Custeio</option>
                             </select>
                         </div>
+                         <div class="mt-4">
+                             <select id="filter-sector" class="w-full md:w-1/4 bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                 <option value="all">Todos os Setores</option>
+                                 <option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option>
+                             </select>
+                         </div>
                     </div>
-                     <div class="mt-4">
-                         <select id="filter-sector" class="w-full md:w-1/4 bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                             <option value="all">Todos os Setores</option>
-                             <option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option>
-                         </select>
-                     </div>
                 </div>
 
                 <main id="contract-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></main>
@@ -123,7 +123,27 @@
     <div id="create-user-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4 p-6 relative animate-fade-in">
             <h2 class="text-2xl font-bold mb-6 text-gray-700">Criar Novo Usuário</h2>
-            <form id="create-user-form"><div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div><div class="space-y-4"><input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required><input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div><div class="flex justify-end space-x-4 mt-8"><button type="button" id="cancel-create-user-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button><button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md">Criar</button></div></form>
+            <form id="create-user-form">
+                <div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
+                <div class="space-y-4">
+                    <input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    <input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    
+                    <select id="new-user-role" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
+                        <option value="" disabled selected>Selecione a Função</option>
+                        <option value="Registador">Registador</option>
+                        <option value="Validador">Validador</option>
+                        <option value="Aprovador">Aprovador</option>
+                        <option value="Finalizador">Finalizador</option>
+                        <option value="Presidente">Presidente</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" id="cancel-create-user-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md">Criar</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -134,7 +154,19 @@
                 <input type="hidden" id="contract-id">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div class="md:col-span-2"><label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label><input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
-                    <div class="md:col-span-2"><label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label><select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Minuta Registrada</option><option>Minuta de Documentação Validada</option><option>Minuta com Fluxo Aprovado</option><option>Minuta em Processo de Assinatura</option><option>Minuta Assinada e Concluída</option></select></div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="status" class="block text-sm font-medium text-gray-600 mb-1">Status do Processo</label>
+                        <select id="status" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
+                            <option>Minuta Registrada</option>
+                            <option>Minuta de Documentação Validada</option>
+                            <option>Minuta com Fluxo Aprovado</option>
+                            <option>Minuta em Processo de Assinatura</option>
+                            <option>Minuta Assinada e Concluída</option>
+                        </select>
+                        <div id="modal-actions-container" class="mt-4 space-x-2"></div>
+                    </div>
+
                     <div class="md:col-span-2"><label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label><input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc."></div>
                     <div><label for="cost_center" class="block text-sm font-medium text-gray-600 mb-1">Centro de Custos</label><select id="cost_center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Institucional</option><option>Cidade do Samba</option><option>Custeio</option></select></div>
                     <div><label for="sector" class="block text-sm font-medium text-gray-600 mb-1">Setor</label><select id="sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option></select></div>
@@ -175,6 +207,8 @@
         
         const { jsPDF } = window.jspdf;
 
+        // ATENÇÃO: É uma boa prática não expor a API Key diretamente no código.
+        // Considere restringir a chave no painel do Firebase para o domínio do seu site.
         const firebaseConfig = {
           apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
           authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
@@ -189,8 +223,9 @@
         const db = getFirestore(primaryApp);
         const functions = getFunctions(primaryApp, 'southamerica-east1');
 
+        // VARIÁVEIS GLOBAIS MODIFICADAS
         let currentUser = null;
-        let userRole = 'user';
+        let userRole = null; // Agora começa como nulo
         let allContracts = [];
         let unsubscribeFromContracts = null;
         let unsubscribeFromAttachments = null;
@@ -235,6 +270,7 @@
 
             if (user) {
                 currentUser = user;
+                // LÓGICA DE BUSCAR FUNÇÃO MANTIDA
                 const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
                 userRole = roleDoc.exists() ? roleDoc.data().role : 'user';
                 
@@ -256,7 +292,7 @@
                 }
             } else {
                 currentUser = null;
-                userRole = 'user';
+                userRole = null;
                 appInitialized = false;
                 if (unsubscribeFromContracts) unsubscribeFromContracts();
                 authView.classList.remove('hidden');
@@ -338,27 +374,41 @@
             }
         }
         
+        // FUNÇÃO DE CRIAR USUÁRIO - MODIFICADA
         async function handleCreateUserFormSubmit(e) {
             e.preventDefault();
             const feedbackEl = document.getElementById('create-user-feedback');
             const email = e.target['new-user-email'].value;
             const password = e.target['new-user-password'].value;
+            const role = e.target['new-user-role'].value; // Captura a nova função
+
+            if (!role) {
+                feedbackEl.textContent = 'Erro: Por favor, selecione uma função.';
+                feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-red-100 text-red-800 block';
+                return;
+            }
             
             feedbackEl.textContent = 'Criando...';
             feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-yellow-100 text-yellow-800 block';
             
             try {
                 const createUser = httpsCallable(functions, 'createUser');
-                await createUser({ email, password, role: 'user' });
+                // Agora enviamos a função selecionada
+                await createUser({ email, password, role: role }); 
                 feedbackEl.textContent = 'Usuário criado com sucesso!';
                 feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-green-100 text-green-800 block';
                 e.target.reset();
+                setTimeout(() => { 
+                    document.getElementById('create-user-modal').classList.remove('flex');
+                    feedbackEl.classList.add('hidden');
+                }, 2000);
             } catch (error) {
                 feedbackEl.textContent = `Erro: ${error.message}`;
                 feedbackEl.className = 'p-3 mb-4 text-sm rounded-lg bg-red-100 text-red-800 block';
             }
         }
         
+        // FUNÇÃO DE ABRIR MODAL - MODIFICADA
         async function openContractModal(mode = 'add', contractData = {}) {
             const modal = document.getElementById('contract-modal');
             const form = modal.querySelector('#contract-form');
@@ -407,13 +457,72 @@
                     renderAttachmentsList(attachments, contractData.id);
                 });
 
-            } else {
+                // --- INÍCIO DA NOVA LÓGICA DE PERMISSÃO NO MODAL ---
+                const statusSelect = form.querySelector('#status');
+                const modalActionsContainer = form.querySelector('#modal-actions-container');
+                modalActionsContainer.innerHTML = '';
+                
+                statusSelect.disabled = true;
+
+                const createActionButton = (text, newStatus, colorClass) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.textContent = text;
+                    button.className = `px-4 py-2 text-white font-semibold rounded-md ${colorClass}`;
+                    button.onclick = () => {
+                        showAlert('Confirmar Alteração', `Deseja mesmo alterar o status para "${newStatus}"?`, [
+                            { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
+                            { 
+                                text: 'Confirmar', 
+                                class: 'px-4 py-2 bg-blue-600 text-white rounded-md', 
+                                onClick: async () => {
+                                    try {
+                                        await updateDoc(doc(db, "sharedContracts", contractData.id), { status: newStatus, lastModifiedAt: serverTimestamp() });
+                                        closeContractModal();
+                                    } catch (err) {
+                                        showAlert('Erro', 'Você não tem permissão para realizar esta ação.', [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
+                                    }
+                                }
+                            }
+                        ]);
+                    };
+                    modalActionsContainer.appendChild(button);
+                };
+
+                const currentStatus = contractData.status;
+                if (userRole === 'Validador' && currentStatus === 'Minuta Registrada') {
+                    createActionButton('Validar Documentação', 'Minuta de Documentação Validada', 'bg-blue-500 hover:bg-blue-600');
+                }
+                if (userRole === 'Aprovador' && currentStatus === 'Minuta de Documentação Validada') {
+                    createActionButton('Aprovar Fluxo', 'Minuta com Fluxo Aprovado', 'bg-indigo-500 hover:bg-indigo-600');
+                }
+                if (userRole === 'Finalizador') {
+                    if (currentStatus === 'Minuta com Fluxo Aprovado') {
+                        createActionButton('Iniciar Assinatura', 'Minuta em Processo de Assinatura', 'bg-orange-500 hover:bg-orange-600');
+                    }
+                    if (currentStatus === 'Minuta em Processo de Assinatura') {
+                        createActionButton('Concluir Assinatura', 'Minuta Assinada e Concluída', 'bg-green-500 hover:bg-green-600');
+                    }
+                }
+                
+                if (userRole === 'admin' || userRole === 'Presidente') {
+                    statusSelect.disabled = false;
+                }
+                // --- FIM DA NOVA LÓGICA DE PERMISSÃO ---
+
+            } else { // MODO 'ADD'
                 modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
                 form.querySelector('#contract-id').value = '';
                 attachmentsListDiv.innerHTML = '';
                 fileInput.disabled = false;
                 installmentsNumberInput.value = 1;
                 generateInstallmentFields();
+                
+                const statusSelect = form.querySelector('#status');
+                const modalActionsContainer = form.querySelector('#modal-actions-container');
+                statusSelect.value = 'Minuta Registrada'; // Status inicial fixo
+                statusSelect.disabled = true;
+                modalActionsContainer.innerHTML = '';
             }
             modal.classList.add('flex');
         };
@@ -458,7 +567,7 @@
             const contractData = {
                 title: form.querySelector('#title').value,
                 party: form.querySelector('#party').value,
-                status: form.querySelector('#status').value,
+                status: form.querySelector('#status').value, // Admin e Presidente ainda usam este campo
                 service_type: form.querySelector('#service_type').value,
                 cost_center: form.querySelector('#cost_center').value,
                 sector: form.querySelector('#sector').value,
@@ -525,7 +634,7 @@
 
             } catch (error) {
                 console.error("Erro ao salvar contrato:", error);
-                showAlert('Erro ao Salvar', `Ocorreu um erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
+                showAlert('Erro ao Salvar', `Ocorreu um erro. Você pode não ter permissão para esta ação. Erro: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
             } finally {
                 saveBtn.disabled = false;
                 saveBtnText.textContent = 'Salvar';
@@ -563,6 +672,7 @@
             }
         }
 
+        // FUNÇÃO DE CRIAR CARD - MODIFICADA
         function createContractCard(contract) {
             const card = document.createElement('div');
             card.className = 'bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between';
@@ -578,39 +688,39 @@
             let installmentsHTML = '';
             if (contract.installments && contract.installments.length > 0) {
                  installmentsHTML = `
-                    <div class="mt-4 pt-4 border-t border-gray-100">
-                        <h4 class="text-sm font-semibold text-gray-600 mb-2">
-                            <i class="fas fa-cash-register mr-1 text-gray-400"></i>Parcelamento:
-                        </h4>
-                        <div class="space-y-2 text-xs">
-                            ${contract.installments.map((inst, index) => `
-                                <div class="flex justify-between items-center">
-                                    <span>Parcela ${index + 1}:</span>
-                                    <span class="font-semibold">${inst.date ? new Date(inst.date + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(inst.value)}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
+                     <div class="mt-4 pt-4 border-t border-gray-100">
+                         <h4 class="text-sm font-semibold text-gray-600 mb-2">
+                             <i class="fas fa-cash-register mr-1 text-gray-400"></i>Parcelamento:
+                         </h4>
+                         <div class="space-y-2 text-xs">
+                             ${contract.installments.map((inst, index) => `
+                                 <div class="flex justify-between items-center">
+                                     <span>Parcela ${index + 1}:</span>
+                                     <span class="font-semibold">${inst.date ? new Date(inst.date + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(inst.value)}</span>
+                                 </div>
+                             `).join('')}
+                         </div>
+                     </div>
+                 `;
             }
 
             let attachmentsHTML = '';
             if (contract.attachments && contract.attachments.length > 0) {
-                attachmentsHTML = `
-                    <div class="mt-4 pt-4 border-t border-gray-100">
-                        <h4 class="text-sm font-semibold text-gray-600 mb-2">
-                            <i class="fas fa-paperclip mr-1 text-gray-400"></i>Anexos:
-                        </h4>
-                        <div class="space-y-2">
-                            ${contract.attachments.map(att => `
-                                <a href="${att.documentURL}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-600 hover:underline text-sm p-1 rounded-md hover:bg-blue-50 transition-colors duration-200">
-                                    <i class="fas fa-file-pdf w-5 mr-2 text-red-500"></i>
-                                    <span class="truncate" title="${att.documentName}">${att.documentName}</span>
-                                </a>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
+                 attachmentsHTML = `
+                     <div class="mt-4 pt-4 border-t border-gray-100">
+                         <h4 class="text-sm font-semibold text-gray-600 mb-2">
+                             <i class="fas fa-paperclip mr-1 text-gray-400"></i>Anexos:
+                         </h4>
+                         <div class="space-y-2">
+                             ${contract.attachments.map(att => `
+                                 <a href="${att.documentURL}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-600 hover:underline text-sm p-1 rounded-md hover:bg-blue-50 transition-colors duration-200">
+                                     <i class="fas fa-file-pdf w-5 mr-2 text-red-500"></i>
+                                     <span class="truncate" title="${att.documentName}">${att.documentName}</span>
+                                 </a>
+                             `).join('')}
+                         </div>
+                     </div>
+                 `;
             }
 
             card.innerHTML = `
@@ -633,14 +743,36 @@
                     ${installmentsHTML}
                     ${attachmentsHTML} 
                 </div>
-                <div class="flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100">
-                    <button data-action="edit" class="text-gray-500 hover:text-blue-600 transition-colors text-sm"><i class="fas fa-pencil-alt mr-1"></i>Gerenciar</button>
-                    <button data-action="delete" class="text-gray-500 hover:text-red-600 transition-colors text-sm"><i class="fas fa-trash-alt mr-1"></i>Deletar</button>
-                </div>
             `;
             
-            card.querySelector('[data-action="edit"]').addEventListener('click', () => openContractModal('edit', contract));
-            card.querySelector('[data-action="delete"]').addEventListener('click', () => deleteContract(contract));
+            // LÓGICA DE BOTÕES MODIFICADA
+            const actionsContainer = document.createElement('div');
+            actionsContainer.className = 'flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100';
+
+            const canManage = userRole === 'admin' || 
+                              userRole === 'Presidente' ||
+                              (userRole === 'Registador' && contract.status === 'Minuta Registrada') ||
+                              (userRole === 'Validador' && contract.status === 'Minuta Registrada') ||
+                              (userRole === 'Aprovador' && contract.status === 'Minuta de Documentação Validada') ||
+                              (userRole === 'Finalizador' && (contract.status === 'Minuta com Fluxo Aprovado' || contract.status === 'Minuta em Processo de Assinatura'));
+                              
+            if (canManage) {
+                const editButton = document.createElement('button');
+                editButton.innerHTML = `<i class="fas fa-pencil-alt mr-1"></i>Gerenciar / Avançar`;
+                editButton.className = "text-gray-500 hover:text-blue-600 transition-colors text-sm";
+                editButton.onclick = () => openContractModal('edit', contract);
+                actionsContainer.appendChild(editButton);
+            }
+
+            if (userRole === 'admin' || userRole === 'Presidente') {
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = `<i class="fas fa-trash-alt mr-1"></i>Deletar`;
+                deleteButton.className = "text-gray-500 hover:text-red-600 transition-colors text-sm";
+                deleteButton.onclick = () => deleteContract(contract);
+                actionsContainer.appendChild(deleteButton);
+            }
+            
+            card.appendChild(actionsContainer);
             return card;
         }
         
@@ -649,7 +781,7 @@
             const number = document.getElementById('installments-number').valueAsNumber || 1;
             container.innerHTML = '';
 
-            if (number > 0) { // Alterado para > 0 para sempre mostrar o container se houver parcelas
+            if (number > 0) { 
                 const title = document.createElement('h4');
                 title.className = 'text-md font-semibold text-gray-700 border-t pt-4 md:col-span-2';
                 title.textContent = 'Detalhes das Parcelas';
