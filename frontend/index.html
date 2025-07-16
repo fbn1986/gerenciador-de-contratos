@@ -127,7 +127,8 @@
                 <div id="create-user-feedback" class="hidden p-3 mb-4 text-sm rounded-lg"></div>
                 <div class="space-y-4">
                     <input type="email" id="new-user-email" placeholder="Email do novo usuário" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
-                    <input type="password" id="new-user-password" placeholder="Senha provisória" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    <!-- CORREÇÃO: ID duplicado removido -->
+                    <input type="password" id="new-user-password" placeholder="Senha provisória (mínimo 6 caracteres)" class="w-full px-3 py-2 border border-gray-300 rounded-md" required minlength="6">
                     <select id="new-user-role" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required>
                         <option value="" disabled selected>Selecione a Função</option>
                         <option value="Registra Proposta">1 - Registra Proposta</option>
