@@ -204,11 +204,8 @@
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, getDoc, addDoc, updateDoc, serverTimestamp, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // --- INÍCIO DA EXECUÇÃO DO SCRIPT ---
-
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- INICIALIZAÇÃO DO FIREBASE ---
             const firebaseConfig = {
               apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
               authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
@@ -221,7 +218,6 @@
             const auth = getAuth(app);
             const db = getFirestore(app);
 
-            // --- VARIÁVEIS GLOBAIS ---
             let currentUser = null;
             let userRole = null;
             let allContracts = [];
@@ -237,7 +233,6 @@
                 'Contrato Assinado e Concluído': { color: 'green', icon: 'fa-check-circle' }
             };
 
-            // --- FUNÇÕES AUXILIARES ---
             async function callHttpsFunction(functionName, payload, region = 'southamerica-east1') {
                 if (!currentUser) throw new Error("Usuário não autenticado.");
                 const token = await currentUser.getIdToken(true);
@@ -280,7 +275,6 @@
                 alertModal.classList.add('flex');
             };
 
-            // --- LÓGICA DE CONTROLO PRINCIPAL ---
             onAuthStateChanged(auth, async (user) => {
                 const authView = document.getElementById('auth-view');
                 const appView = document.getElementById('app-view');
@@ -317,7 +311,6 @@
                 }
             });
 
-            // --- FUNÇÕES DE SETUP DE LISTENERS ---
             function setupAuthListeners() {
                 const loginForm = document.getElementById('login-form');
                 const registerForm = document.getElementById('register-form');
@@ -390,7 +383,6 @@
                 }
             }
 
-            // --- FUNÇÕES DE LÓGICA DE NEGÓCIO ---
             async function handleRegisterFormSubmit(e) {
                 e.preventDefault();
                 try {
@@ -503,6 +495,12 @@
                     
                     const currentStatus = (contractData.status || '').trim().toLowerCase();
                     const currentUserRole = (userRole || '').trim().toLowerCase();
+
+                    // --- CONSOLE DEBUG ---
+                    console.log(`--- ABRINDO MODAL: ${contractData.title} ---`);
+                    console.log(`[Modal] Status visto: '${currentStatus}'`);
+                    console.log(`[Modal] Função do Usuário vista: '${currentUserRole}'`);
+                    console.log("-----------------------------------------");
 
                     if (currentUserRole === 'valida documentos' && currentStatus === 'proposta registrada') {
                         createActionButton('Validar Documentação', 'Documentação Validada', 'bg-cyan-500 hover:bg-cyan-600');
