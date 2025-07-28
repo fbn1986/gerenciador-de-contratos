@@ -254,6 +254,13 @@
                 'Contrato Assinado e Concluído': { color: 'green', icon: 'fa-check-circle' }
             };
 
+            // *** NOVA FUNÇÃO AUXILIAR PARA PERMISSÕES ***
+            function isPrivilegedRole(role) {
+                if (!role) return false;
+                const lowerCaseRole = role.toLowerCase();
+                return lowerCaseRole === 'admin' || lowerCaseRole === 'presidente';
+            }
+
             async function callHttpsFunction(functionName, payload, region = 'southamerica-east1') {
                 if (!currentUser) throw new Error("Usuário não autenticado.");
                 const token = await currentUser.getIdToken(true);
@@ -354,9 +361,11 @@
                 setupInitialAuthScreen();
             }
 
+            // *** CORREÇÃO APLICADA AQUI ***
             function setupAppUI() {
                 document.getElementById('user-email').textContent = `Logado como: ${currentUser.email} (${userRole || 'Sem Função'})`;
-                if (userRole === 'admin') {
+                // Usa a nova função auxiliar para mostrar o botão de criar usuário
+                if (isPrivilegedRole(userRole)) {
                     document.getElementById('create-user-btn').classList.remove('hidden');
                 } else {
                     document.getElementById('create-user-btn').classList.add('hidden');
@@ -381,16 +390,14 @@
                 
                 const contractsQuery = query(collection(db, "sharedContracts"), orderBy("lastModifiedAt", "desc"));
                 
-                // *** ALTERAÇÃO AQUI: Carrega contratos e seus anexos juntos ***
                 unsubscribeFromContracts = onSnapshot(contractsQuery, async (snapshot) => {
                     const contractsFromDB = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     
-                    // Para cada contrato, busca os seus anexos
                     allContracts = await Promise.all(contractsFromDB.map(async (contract) => {
                         const attachmentsQuery = query(collection(db, `sharedContracts/${contract.id}/anexos`), orderBy("uploadedAt"));
                         const attachmentsSnapshot = await getDocs(attachmentsQuery);
                         const attachments = attachmentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                        return { ...contract, attachments }; // Adiciona os anexos ao objeto do contrato
+                        return { ...contract, attachments };
                     }));
 
                     applyFiltersAndRender();
@@ -546,23 +553,26 @@
                     };
                     
                     const currentStatus = (contractData.status || '').trim();
-                    const currentUserRole = (userRole || '').trim();
-
-                    if (currentUserRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') {
+                    
+                    if (userRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') {
                         createActionButton('Validar Documentação', 'Documentação Validada', 'bg-cyan-500 hover:bg-cyan-600');
                     }
-                    if (currentUserRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') {
+                    if (userRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') {
                         createActionButton('Validar Pagamento', 'Pagamento Validado', 'bg-blue-500 hover:bg-blue-600');
                     }
-                    if (currentUserRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') {
+                    if (userRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') {
                         createActionButton('Validar para Assinatura', 'Pronta para Assinatura', 'bg-indigo-500 hover:bg-indigo-600');
                     }
-                    if (currentUserRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura') {
+                    if (userRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura') {
                         createActionButton('Assinar e Concluir', 'Contrato Assinado e Concluído', 'bg-green-500 hover:bg-green-600');
                     }
-                    if (currentUserRole === 'admin' || currentUserRole === 'Presidente') {
+                    
+                    // *** CORREÇÃO APLICADA AQUI ***
+                    // Usa a nova função auxiliar para desbloquear o status
+                    if (isPrivilegedRole(userRole)) {
                         statusSelect.disabled = false;
                     }
+
                 } else { 
                     modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
                     form.querySelector('#contract-id').value = '';
@@ -727,7 +737,6 @@
                      `;
                 }
 
-                // *** ALTERAÇÃO AQUI: Cria a seção de anexos para o card ***
                 let attachmentsHTML = '';
                 if (contract.attachments && contract.attachments.length > 0) {
                      attachmentsHTML = `
@@ -773,15 +782,13 @@
                 actionsContainer.className = 'flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100';
 
                 const currentStatus = (contract.status || '').trim();
-                const currentUserRole = (userRole || '').trim();
-
-                const canManage = currentUserRole === 'admin' || 
-                                  currentUserRole === 'Presidente' ||
-                                  (currentUserRole === 'Registra Proposta' && currentStatus === 'Proposta Registrada') ||
-                                  (currentUserRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') ||
-                                  (currentUserRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') ||
-                                  (currentUserRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') ||
-                                  (currentUserRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura');
+                
+                const canManage = isPrivilegedRole(userRole) ||
+                                  (userRole === 'Registra Proposta' && currentStatus === 'Proposta Registrada') ||
+                                  (userRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') ||
+                                  (userRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') ||
+                                  (userRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') ||
+                                  (userRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura');
                                   
                 if (canManage) {
                     const editButton = document.createElement('button');
@@ -791,7 +798,9 @@
                     actionsContainer.appendChild(editButton);
                 }
 
-                if (currentUserRole === 'admin' || currentUserRole === 'Presidente') {
+                // *** CORREÇÃO APLICADA AQUI ***
+                // Usa a nova função auxiliar para mostrar o botão de deletar
+                if (isPrivilegedRole(userRole)) {
                     const deleteButton = document.createElement('button');
                     deleteButton.innerHTML = `<i class="fas fa-trash-alt mr-1"></i>Deletar`;
                     deleteButton.className = "text-gray-500 hover:text-red-600 transition-colors text-sm font-medium";

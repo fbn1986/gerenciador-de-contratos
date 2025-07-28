@@ -4,7 +4,6 @@ const sgMail = require("@sendgrid/mail");
 const cors = require("cors");
 
 // Inicializa o handler de CORS para permitir pedidos do seu site
-// ATENÇÃO: Para testes locais, pode usar { origin: true }. Para produção, use o seu URL.
 const corsHandler = cors({ origin: "https://relcontratos.netlify.app" });
 
 admin.initializeApp();
@@ -17,6 +16,17 @@ if (functions.config().sendgrid && functions.config().sendgrid.key) {
   console.warn("Chave de API do SendGrid não configurada. As notificações por e-mail estarão desativadas.");
 }
 
+// --- FUNÇÃO AUXILIAR DE PERMISSÃO ---
+/**
+ * Verifica se a função do usuário é de Admin ou Presidente.
+ * @param {string | null} role A função do usuário.
+ * @returns {boolean} True se for um usuário privilegiado.
+ */
+function isPrivilegedUser(role) {
+    return role === 'admin' || role === 'Presidente';
+}
+
+
 // --- GESTÃO DE USUÁRIOS E PERMISSÕES ---
 
 exports.assignInitialRole = functions.auth.user().onCreate(async (user) => {
@@ -24,7 +34,6 @@ exports.assignInitialRole = functions.auth.user().onCreate(async (user) => {
     const rolesCollection = db.collection("userRoles");
     try {
         const snapshot = await rolesCollection.get();
-        // O primeiro usuário a ser criado se torna 'admin', os outros 'Registra Proposta'
         const role = snapshot.empty ? "admin" : "Registra Proposta";
         await rolesCollection.doc(uid).set({ role, email, createdAt: admin.firestore.FieldValue.serverTimestamp() });
         if (role === 'admin') {
@@ -46,8 +55,12 @@ exports.createUser = functions.region('southamerica-east1').https.onRequest((req
             const decodedIdToken = await admin.auth().verifyIdToken(idToken);
             
             const callerRoleDoc = await db.collection("userRoles").doc(decodedIdToken.uid).get();
-            if (!callerRoleDoc.exists || callerRoleDoc.data().role !== "admin") {
-                throw new functions.https.HttpsError('permission-denied', 'Apenas administradores podem executar esta ação.');
+            const callerRole = callerRoleDoc.exists ? callerRoleDoc.data().role : null;
+
+            // *** CORREÇÃO APLICADA AQUI ***
+            // Agora verifica se o usuário é Admin OU Presidente.
+            if (!isPrivilegedUser(callerRole)) {
+                throw new functions.https.HttpsError('permission-denied', 'Apenas Admin ou Presidente podem executar esta ação.');
             }
 
             const { email, password, role } = req.body.data;
@@ -68,7 +81,7 @@ exports.createUser = functions.region('southamerica-east1').https.onRequest((req
 });
 
 
-// --- NOTIFICAÇÕES (Sem alterações) ---
+// --- NOTIFICAÇÕES ---
 const notificationMap = {
     'Proposta Registrada': 'janainafaria@liesa.org.br',
     'Documentação Validada': 'camilla@liesa.org.br',
@@ -80,13 +93,13 @@ const notificationMap = {
 async function sendNotificationEmail(contractData, previousStatus = "N/A") {
     const newStatus = contractData.status;
     const recipientEmail = notificationMap[newStatus];
-    if (!recipientEmail || !sgMail.apiKey) return; // Não envia se não houver destinatário ou API key
+    if (!recipientEmail || !sgMail.apiKey) return;
 
     const modifierEmail = contractData.lastModifiedBy ? contractData.lastModifiedBy.email : (contractData.createdBy ? contractData.createdBy.email : 'Sistema');
     
     const msg = {
         to: recipientEmail,
-        from: 'fernandoneto@liesa.org.br', // Use um e-mail verificado no SendGrid
+        from: 'fernandoneto@liesa.org.br',
         subject: `Atualização de Contrato: ${contractData.title} - ${newStatus}`,
         html: `<p>Olá,</p><p>O contrato <strong>${contractData.title}</strong> foi atualizado.</p><ul><li>Status Anterior: ${previousStatus}</li><li>Novo Status: ${newStatus}</li><li>Modificado por: ${modifierEmail}</li></ul><p>Acesse o sistema para revisar.</p>`,
     };
@@ -110,9 +123,6 @@ exports.notifyOnUpdate = functions.firestore.document('sharedContracts/{contract
 
 // --- TRILHA DE AUDITORIA E DELEÇÃO ---
 
-/**
- * Registra a criação de um contrato na trilha de auditoria.
- */
 exports.auditOnCreate = functions.firestore
     .document('sharedContracts/{contractId}')
     .onCreate(async (snap, context) => {
@@ -130,9 +140,6 @@ exports.auditOnCreate = functions.firestore
         return db.collection('sharedContracts').doc(contractId).collection('auditTrail').add(auditLog);
     });
 
-/**
- * Registra atualizações importantes de um contrato na trilha de auditoria.
- */
 exports.auditOnUpdate = functions.firestore
     .document('sharedContracts/{contractId}')
     .onUpdate(async (change, context) => {
@@ -144,7 +151,6 @@ exports.auditOnUpdate = functions.firestore
         const auditTrailRef = db.collection('sharedContracts').doc(contractId).collection('auditTrail');
         const logs = [];
 
-        // Verifica mudança de status
         if (before.status !== after.status) {
             logs.push({
                 action: "Status Alterado",
@@ -152,7 +158,6 @@ exports.auditOnUpdate = functions.firestore
             });
         }
 
-        // Verifica outros campos importantes
         const fieldsToTrack = {
             title: "Título",
             contractedParty: "Parte Contratada",
@@ -170,27 +175,21 @@ exports.auditOnUpdate = functions.firestore
             }
         }
         
-        // Se houver logs para adicionar, cria um batch
         if (logs.length > 0) {
             const batch = db.batch();
             const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
             logs.forEach(logData => {
-                const logRef = auditTrailRef.doc(); // Novo documento com ID aleatório
+                const logRef = auditTrailRef.doc();
                 batch.set(logRef, { ...logData, user: { uid: user.uid, email: user.email }, timestamp });
             });
             await batch.commit();
         }
     });
 
-/**
- * Apaga um contrato, seus anexos e arquivos, mas antes arquiva tudo
- * para garantir que o histórico de auditoria seja preservado.
- */
 exports.deleteContractAndLog = functions.region('southamerica-east1').https.onRequest((req, res) => {
     corsHandler(req, res, async () => {
         try {
-            // 1. Autenticação e Autorização
             if (!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) {
                 throw new functions.https.HttpsError('unauthenticated', 'Token não fornecido.');
             }
@@ -199,11 +198,12 @@ exports.deleteContractAndLog = functions.region('southamerica-east1').https.onRe
 
             const callerRoleDoc = await db.collection("userRoles").doc(decodedToken.uid).get();
             const callerRole = callerRoleDoc.exists ? callerRoleDoc.data().role : null;
-            if (callerRole !== "admin" && callerRole !== "Presidente") {
+            
+            // Usando a função auxiliar para consistência
+            if (!isPrivilegedUser(callerRole)) {
                 throw new functions.https.HttpsError('permission-denied', 'Apenas Admin ou Presidente podem apagar contratos.');
             }
 
-            // 2. Obter ID do contrato
             const { contractId } = req.body.data;
             if (!contractId) {
                 throw new functions.https.HttpsError("invalid-argument", "ID do contrato não fornecido.");
@@ -215,31 +215,21 @@ exports.deleteContractAndLog = functions.region('southamerica-east1').https.onRe
                 throw new functions.https.HttpsError("not-found", "Contrato não encontrado.");
             }
 
-            // 3. Ler todos os dados a serem arquivados (contrato, anexos, auditoria)
             const contractData = contractSnap.data();
             const auditTrailSnaps = await contractRef.collection('auditTrail').get();
             const auditTrail = auditTrailSnaps.docs.map(doc => doc.data());
             const anexosSnaps = await contractRef.collection('anexos').get();
             const anexos = anexosSnaps.docs.map(doc => doc.data());
 
-            // 4. Arquivar tudo numa nova coleção 'archivedContracts'
             const archiveRef = db.collection('archivedContracts').doc(contractId);
             await archiveRef.set({
                 ...contractData,
                 anexos,
-                auditTrail: [
-                    ...auditTrail,
-                    {
-                        action: "Contrato Deletado e Arquivado",
-                        user: { uid: decodedToken.uid, email: decodedToken.email },
-                        timestamp: admin.firestore.FieldValue.serverTimestamp()
-                    }
-                ],
+                auditTrail: auditTrail,
                 deletedBy: { uid: decodedToken.uid, email: decodedToken.email },
                 deletedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
 
-            // 5. Apagar arquivos do Storage
             const bucket = admin.storage().bucket();
             for (const anexo of anexos) {
                 if (anexo.storagePath) {
@@ -247,7 +237,6 @@ exports.deleteContractAndLog = functions.region('southamerica-east1').https.onRe
                 }
             }
 
-            // 6. Apagar documentos do Firestore (subcoleções e documento principal) em batch
             const batch = db.batch();
             anexosSnaps.forEach(doc => batch.delete(doc.ref));
             auditTrailSnaps.forEach(doc => batch.delete(doc.ref));
@@ -265,7 +254,7 @@ exports.deleteContractAndLog = functions.region('southamerica-east1').https.onRe
 });
 
 
-// --- FUNÇÕES DE ARQUIVOS (Sem alterações, mas com pequenas melhorias de log) ---
+// --- FUNÇÕES DE ARQUIVOS ---
 exports.uploadFile = functions.region('southamerica-east1').https.onRequest((req, res) => {
     corsHandler(req, res, async () => {
         try {
@@ -286,7 +275,6 @@ exports.uploadFile = functions.region('southamerica-east1').https.onRequest((req
             const file = bucket.file(filePath);
             await file.save(buffer, { metadata: { contentType: 'application/pdf' }, public: true });
             
-            // O URL público pode ser construído de forma mais robusta
             const publicUrl = file.publicUrl();
 
             const attachmentData = {
@@ -297,7 +285,6 @@ exports.uploadFile = functions.region('southamerica-east1').https.onRequest((req
                 uploadedBy: { uid: decodedToken.uid, email: decodedToken.email }
             };
 
-            // Adiciona o anexo e também um log de auditoria
             const contractRef = db.collection('sharedContracts').doc(contractId);
             const newAttachmentRef = await contractRef.collection('anexos').add(attachmentData);
             await contractRef.collection('auditTrail').add({
@@ -330,11 +317,9 @@ exports.deleteFile = functions.region('southamerica-east1').https.onRequest((req
                 throw new functions.https.HttpsError("invalid-argument", "Dados insuficientes para apagar ficheiro.");
             }
 
-            // Apaga o documento do Firestore e o arquivo do Storage
             await db.collection('sharedContracts').doc(contractId).collection('anexos').doc(attachmentId).delete();
             await admin.storage().bucket().file(storagePath).delete();
 
-            // Adiciona um log de auditoria para a deleção do ficheiro
             await db.collection('sharedContracts').doc(contractId).collection('auditTrail').add({
                 action: "Anexo Removido",
                 details: `Ficheiro "${fileName || storagePath}" foi removido.`,
