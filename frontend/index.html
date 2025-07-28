@@ -549,9 +549,16 @@
                         modalActionsContainer.appendChild(button);
                     };
                     
-                    // *** CORREÇÃO APLICADA AQUI: Comparações robustas (sem case-sensitive) ***
                     const currentStatus = (contractData.status || '').trim().toLowerCase();
                     const currentUserRole = (userRole || '').trim().toLowerCase();
+
+                    // *** ADICIONANDO LOGS DE DEPURACÃO ***
+                    console.log("--- DEBUG: Verificando Permissões no Modal ---");
+                    console.log("Função do Usuário (userRole):", `'${userRole}'`);
+                    console.log("Status do Contrato (contract.status):", `'${contractData.status}'`);
+                    console.log("Função Formatada:", `'${currentUserRole}'`);
+                    console.log("Status Formatado:", `'${currentStatus}'`);
+                    console.log("---------------------------------------------");
                     
                     if (currentUserRole === 'valida documentos' && currentStatus === 'proposta registrada') {
                         createActionButton('Validar Documentação', 'Documentação Validada', 'bg-cyan-500 hover:bg-cyan-600');
@@ -778,7 +785,6 @@
                 const actionsContainer = document.createElement('div');
                 actionsContainer.className = 'flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100';
 
-                // *** CORREÇÃO APLICADA AQUI: Comparações robustas (sem case-sensitive) ***
                 const currentStatus = (contract.status || '').trim().toLowerCase();
                 const currentUserRole = (userRole || '').trim().toLowerCase();
                 
