@@ -254,7 +254,6 @@
                 'Contrato Assinado e Concluído': { color: 'green', icon: 'fa-check-circle' }
             };
 
-            // *** NOVA FUNÇÃO AUXILIAR PARA PERMISSÕES ***
             function isPrivilegedRole(role) {
                 if (!role) return false;
                 const lowerCaseRole = role.toLowerCase();
@@ -361,10 +360,8 @@
                 setupInitialAuthScreen();
             }
 
-            // *** CORREÇÃO APLICADA AQUI ***
             function setupAppUI() {
                 document.getElementById('user-email').textContent = `Logado como: ${currentUser.email} (${userRole || 'Sem Função'})`;
-                // Usa a nova função auxiliar para mostrar o botão de criar usuário
                 if (isPrivilegedRole(userRole)) {
                     document.getElementById('create-user-btn').classList.remove('hidden');
                 } else {
@@ -552,23 +549,23 @@
                         modalActionsContainer.appendChild(button);
                     };
                     
-                    const currentStatus = (contractData.status || '').trim();
+                    // *** CORREÇÃO APLICADA AQUI: Comparações robustas (sem case-sensitive) ***
+                    const currentStatus = (contractData.status || '').trim().toLowerCase();
+                    const currentUserRole = (userRole || '').trim().toLowerCase();
                     
-                    if (userRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') {
+                    if (currentUserRole === 'valida documentos' && currentStatus === 'proposta registrada') {
                         createActionButton('Validar Documentação', 'Documentação Validada', 'bg-cyan-500 hover:bg-cyan-600');
                     }
-                    if (userRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') {
+                    if (currentUserRole === 'valida pagamento' && currentStatus === 'documentação validada') {
                         createActionButton('Validar Pagamento', 'Pagamento Validado', 'bg-blue-500 hover:bg-blue-600');
                     }
-                    if (userRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') {
+                    if (currentUserRole === 'valida assinatura' && currentStatus === 'pagamento validado') {
                         createActionButton('Validar para Assinatura', 'Pronta para Assinatura', 'bg-indigo-500 hover:bg-indigo-600');
                     }
-                    if (userRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura') {
+                    if (currentUserRole === 'assina minuta' && currentStatus === 'pronta para assinatura') {
                         createActionButton('Assinar e Concluir', 'Contrato Assinado e Concluído', 'bg-green-500 hover:bg-green-600');
                     }
                     
-                    // *** CORREÇÃO APLICADA AQUI ***
-                    // Usa a nova função auxiliar para desbloquear o status
                     if (isPrivilegedRole(userRole)) {
                         statusSelect.disabled = false;
                     }
@@ -781,14 +778,16 @@
                 const actionsContainer = document.createElement('div');
                 actionsContainer.className = 'flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100';
 
-                const currentStatus = (contract.status || '').trim();
+                // *** CORREÇÃO APLICADA AQUI: Comparações robustas (sem case-sensitive) ***
+                const currentStatus = (contract.status || '').trim().toLowerCase();
+                const currentUserRole = (userRole || '').trim().toLowerCase();
                 
                 const canManage = isPrivilegedRole(userRole) ||
-                                  (userRole === 'Registra Proposta' && currentStatus === 'Proposta Registrada') ||
-                                  (userRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') ||
-                                  (userRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') ||
-                                  (userRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') ||
-                                  (userRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura');
+                                  (currentUserRole === 'registra proposta' && currentStatus === 'proposta registrada') ||
+                                  (currentUserRole === 'valida documentos' && currentStatus === 'proposta registrada') ||
+                                  (currentUserRole === 'valida pagamento' && currentStatus === 'documentação validada') ||
+                                  (currentUserRole === 'valida assinatura' && currentStatus === 'pagamento validado') ||
+                                  (currentUserRole === 'assina minuta' && currentStatus === 'pronta para assinatura');
                                   
                 if (canManage) {
                     const editButton = document.createElement('button');
@@ -798,8 +797,6 @@
                     actionsContainer.appendChild(editButton);
                 }
 
-                // *** CORREÇÃO APLICADA AQUI ***
-                // Usa a nova função auxiliar para mostrar o botão de deletar
                 if (isPrivilegedRole(userRole)) {
                     const deleteButton = document.createElement('button');
                     deleteButton.innerHTML = `<i class="fas fa-trash-alt mr-1"></i>Deletar`;
