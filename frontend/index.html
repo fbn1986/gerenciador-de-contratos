@@ -16,10 +16,16 @@
         .modal-content { max-height: 90vh; overflow-y: auto; }
         @keyframes fade-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
+        /* Estilo para a barra de rolagem da trilha de auditoria */
+        #audit-trail-list::-webkit-scrollbar { width: 8px; }
+        #audit-trail-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        #audit-trail-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        #audit-trail-list::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
+    <!-- TELA DE LOGIN -->
     <div id="auth-view" class="flex items-center justify-center min-h-screen">
         <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
             <form id="login-form">
@@ -49,6 +55,7 @@
         </div>
     </div>
 
+    <!-- TELA PRINCIPAL DA APLICAÇÃO -->
     <div id="app-view" class="hidden">
         <div class="container mx-auto p-4 sm:p-6 lg:p-8">
             <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
@@ -103,8 +110,8 @@
                                 <option>Custeio</option>
                             </select>
                         </div>
-                         <div class="mt-4">
-                             <select id="filter-sector" class="w-full md:w-1/4 bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                         <div class="md:col-span-1">
+                             <select id="filter-sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                  <option value="all">Todos os Setores</option>
                                  <option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option>
                              </select>
@@ -120,6 +127,7 @@
         </div>
     </div>
     
+    <!-- MODAL DE CRIAR USUÁRIO -->
     <div id="create-user-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4 p-6 relative animate-fade-in">
             <h2 class="text-2xl font-bold mb-6 text-gray-700">Criar Novo Usuário</h2>
@@ -147,12 +155,13 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONTRATO (com Trilha de Auditoria) -->
     <div id="contract-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-40">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg mx-4 p-6 relative animate-fade-in modal-content">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl mx-4 p-6 relative animate-fade-in modal-content">
             <h2 id="modal-title" class="text-2xl font-bold mb-6 text-gray-700">Adicionar Novo Contrato</h2>
             <form id="contract-form">
                 <input type="hidden" id="contract-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                     <div class="md:col-span-2"><label for="title" class="block text-sm font-medium text-gray-600 mb-1">Título do Contrato</label><input type="text" id="title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
                     
                     <div class="md:col-span-2">
@@ -167,24 +176,33 @@
                         <div id="modal-actions-container" class="mt-4 space-x-2"></div>
                     </div>
 
-                    <div class="md:col-span-2"><label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label><input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc."></div>
+                    <div><label for="service_type" class="block text-sm font-medium text-gray-600 mb-1">Tipo de Serviço</label><input type="text" id="service_type" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Show, Consultoria, etc."></div>
+                    <div><label for="party" class="block text-sm font-medium text-gray-600 mb-1">Parte Contratada</label><input type="text" id="party" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
                     <div><label for="cost_center" class="block text-sm font-medium text-gray-600 mb-1">Centro de Custos</label><select id="cost_center" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>Institucional</option><option>Cidade do Samba</option><option>Custeio</option></select></div>
                     <div><label for="sector" class="block text-sm font-medium text-gray-600 mb-1">Setor</label><select id="sector" class="w-full bg-white px-3 py-2 border border-gray-300 rounded-md" required><option>RH</option><option>Administração</option><option>Impostos</option><option>Manutenção</option><option>Operacional</option><option>Jurídico</option><option>Cultural</option><option>Comercial/Institucional</option><option>Infraestrutura</option><option>Julgadores</option><option>Logística</option><option>Marketing</option><option>Comunicação</option><option>Pista</option><option>Produção</option><option>Produção - Setor 4</option><option>Eventos</option><option>Contrapartidas</option><option>Ensaios Técnicos</option></select></div>
-                    <div><label for="party" class="block text-sm font-medium text-gray-600 mb-1">Parte Contratada</label><input type="text" id="party" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
                     <div><label for="value" class="block text-sm font-medium text-gray-600 mb-1">Valor (R$)</label><input type="number" step="0.01" id="value" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
-                    
                     <div>
                         <label for="installments-number" class="block text-sm font-medium text-gray-600 mb-1">Nº de Parcelas</label>
                         <input type="number" id="installments-number" class="w-full px-3 py-2 border border-gray-300 rounded-md" min="1" value="1">
                     </div>
-                    <div id="installments-container" class="md:col-span-2 mt-4 space-y-4"></div>
                     <div><label for="start-date" class="block text-sm font-medium text-gray-600 mb-1">Início</label><input type="date" id="start-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
                     <div><label for="end-date" class="block text-sm font-medium text-gray-600 mb-1">Término</label><input type="date" id="end-date" class="w-full px-3 py-2 border border-gray-300 rounded-md" required></div>
+                    <div id="installments-container" class="md:col-span-2 mt-2 space-y-4"></div>
                     <div class="md:col-span-2"><label for="observations" class="block text-sm font-medium text-gray-600 mb-1">Observações</label><textarea id="observations" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Ex: Falta assinatura do diretor financeiro..."></textarea></div>
                     <div class="md:col-span-2"><label for="document-files" class="block text-sm font-medium text-gray-600 mb-1">Anexar Documentos (PDF)</label>
                         <input type="file" id="document-files" accept=".pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple>
                         <div id="attachments-list" class="mt-4 space-y-2"></div>
                         <div id="staged-attachments-list" class="mt-2 space-y-2"></div>
+                    </div>
+
+                    <!-- NOVA SEÇÃO: TRILHA DE AUDITORIA -->
+                    <div id="audit-trail-section" class="md:col-span-2 mt-6 pt-4 border-t border-gray-200 hidden">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-history mr-2 text-gray-500"></i>Histórico de Alterações (Trilha de Auditoria)
+                        </h3>
+                        <div id="audit-trail-list" class="space-y-3 max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-md">
+                            <!-- Os logs de auditoria serão inseridos aqui pelo JavaScript -->
+                        </div>
                     </div>
                 </div>
                 <div class="flex justify-end space-x-4 mt-8"><button type="button" id="cancel-btn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md">Cancelar</button><button type="submit" id="save-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md flex items-center justify-center"><span id="save-btn-text">Salvar</span><i id="save-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i></button></div>
@@ -195,6 +213,7 @@
         </div>
     </div>
     
+    <!-- MODAL DE ALERTA -->
     <div id="alert-modal" class="modal-backdrop fixed inset-0 items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm mx-4 p-6 relative animate-fade-in"><h3 id="alert-title" class="text-lg font-bold text-gray-800 mb-4"></h3><p id="alert-message" class="text-gray-600 mb-6"></p><div id="alert-buttons" class="flex justify-end space-x-4"></div></div>
     </div>
@@ -206,13 +225,16 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             
+            // IMPORTANTE: Suas chaves de API do Firebase não devem ficar aqui.
+            // Use variáveis de ambiente no seu serviço de hospedagem (Netlify, Vercel, etc.)
+            // para manter estas informações seguras.
             const firebaseConfig = {
-              apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
-              authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
-              projectId: "gerenciador-de-contratos-cbc47",
-              storageBucket: "gerenciador-de-contratos-cbc47.appspot.com",
-              messagingSenderId: "544353319340",
-              appId: "1:544353319340:web:070ac470eac63241f36209"
+                apiKey: "SUA_API_KEY", // Substitua por variável de ambiente
+                authDomain: "SEU_AUTH_DOMAIN", // Substitua por variável de ambiente
+                projectId: "SEU_PROJECT_ID", // Substitua por variável de ambiente
+                storageBucket: "SEU_STORAGE_BUCKET", // Substitua por variável de ambiente
+                messagingSenderId: "SEU_MESSAGING_SENDER_ID", // Substitua por variável de ambiente
+                appId: "SUA_APP_ID" // Substitua por variável de ambiente
             };
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
@@ -223,6 +245,7 @@
             let allContracts = [];
             let unsubscribeFromContracts = null;
             let unsubscribeFromAttachments = null;
+            let unsubscribeFromAuditTrail = null; // Novo listener para auditoria
             let appListenersInitialized = false;
 
             const PROCESS_STATUS_STYLES = {
@@ -236,7 +259,9 @@
             async function callHttpsFunction(functionName, payload, region = 'southamerica-east1') {
                 if (!currentUser) throw new Error("Usuário não autenticado.");
                 const token = await currentUser.getIdToken(true);
-                const url = `https://${region}-gerenciador-de-contratos-cbc47.cloudfunctions.net/${functionName}`;
+                // ATENÇÃO: O Project ID deve ser o mesmo da sua configuração do Firebase.
+                const projectId = firebaseConfig.projectId; 
+                const url = `https://${region}-${projectId}.cloudfunctions.net/${functionName}`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -283,7 +308,7 @@
                     currentUser = user;
                     try {
                         const roleDoc = await getDoc(doc(db, "userRoles", user.uid));
-                        userRole = roleDoc.exists ? roleDoc.data().role : null;
+                        userRole = roleDoc.exists() ? roleDoc.data().role : null;
                         
                         authView.classList.remove('flex');
                         authView.classList.add('hidden');
@@ -303,6 +328,8 @@
                     currentUser = null;
                     userRole = null;
                     if (unsubscribeFromContracts) unsubscribeFromContracts();
+                    if (unsubscribeFromAttachments) unsubscribeFromAttachments();
+                    if (unsubscribeFromAuditTrail) unsubscribeFromAuditTrail();
                     appListenersInitialized = false;
                     
                     authView.classList.remove('hidden');
@@ -356,14 +383,8 @@
                 document.getElementById('create-user-form').addEventListener('submit', handleCreateUserFormSubmit);
                 
                 const contractsQuery = query(collection(db, "sharedContracts"), orderBy("lastModifiedAt", "desc"));
-                unsubscribeFromContracts = onSnapshot(contractsQuery, async (snapshot) => {
-                    const contractsFromDB = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    allContracts = await Promise.all(contractsFromDB.map(async (contract) => {
-                        const attachmentsQuery = query(collection(db, `sharedContracts/${contract.id}/anexos`), orderBy("uploadedAt"));
-                        const attachmentsSnapshot = await getDocs(attachmentsQuery);
-                        const attachments = attachmentsSnapshot.docs.map(doc => doc.data());
-                        return { ...contract, attachments };
-                    }));
+                unsubscribeFromContracts = onSnapshot(contractsQuery, (snapshot) => {
+                    allContracts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     applyFiltersAndRender();
                     document.getElementById('loading-message').style.display = 'none';
                 }, (error) => {
@@ -376,7 +397,7 @@
                 const registerLinkContainer = document.getElementById('register-link-container');
                 try {
                     const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
-                    registerLinkContainer.style.display = adminDoc.exists ? 'none' : 'block';
+                    registerLinkContainer.style.display = adminDoc.exists() ? 'none' : 'block';
                 } catch (e) {
                     console.error("Erro ao verificar setup do admin:", e);
                     registerLinkContainer.style.display = 'block'; 
@@ -387,7 +408,7 @@
                 e.preventDefault();
                 try {
                     const adminDoc = await getDoc(doc(db, "appConfig", "adminSetup"));
-                    if (adminDoc.exists) {
+                    if (adminDoc.exists()) {
                         showAuthAlert('register-error', 'A conta de Admin já foi criada.');
                         return;
                     }
@@ -440,21 +461,30 @@
                 const attachmentsListDiv = form.querySelector('#attachments-list');
                 const installmentsNumberInput = form.querySelector('#installments-number');
                 installmentsNumberInput.addEventListener('change', () => generateInstallmentFields());
+                
+                // Limpa listeners antigos
                 if (unsubscribeFromAttachments) unsubscribeFromAttachments();
+                if (unsubscribeFromAuditTrail) unsubscribeFromAuditTrail();
+
+                // Esconde a seção de auditoria por padrão
+                const auditTrailSection = document.getElementById('audit-trail-section');
+                auditTrailSection.classList.add('hidden');
+
                 if (mode === 'edit') {
                     modal.querySelector('#modal-title').textContent = 'Gerenciar Contrato';
                     form.querySelector('#contract-id').value = contractData.id;
                     form.querySelector('#title').value = contractData.title || '';
-                    form.querySelector('#party').value = contractData.party || '';
+                    form.querySelector('#party').value = contractData.contractedParty || ''; // Corrigido de 'party' para 'contractedParty'
                     form.querySelector('#status').value = contractData.status || 'Proposta Registrada';
                     form.querySelector('#service_type').value = contractData.service_type || '';
-                    form.querySelector('#cost_center').value = contractData.cost_center || 'Institucional';
+                    form.querySelector('#cost_center').value = contractData.costCenter || 'Institucional'; // Corrigido
                     form.querySelector('#sector').value = contractData.sector || 'RH';
                     form.querySelector('#start-date').value = contractData.startDate || '';
                     form.querySelector('#end-date').value = contractData.endDate || '';
-                    form.querySelector('#value').value = contractData.value || 0;
+                    form.querySelector('#value').value = contractData.totalValue || 0; // Corrigido
                     form.querySelector('#observations').value = contractData.observations || '';
                     fileInput.disabled = false;
+                    
                     if (contractData.installments && contractData.installments.length > 0) {
                         installmentsNumberInput.value = contractData.installments.length;
                         generateInstallmentFields(contractData.installments);
@@ -462,16 +492,31 @@
                         installmentsNumberInput.value = 1;
                         generateInstallmentFields();
                     }
+                    
+                    // Listener para Anexos
                     attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Carregando anexos...</p>';
                     const attachmentsQuery = query(collection(db, `sharedContracts/${contractData.id}/anexos`), orderBy("uploadedAt", "desc"));
                     unsubscribeFromAttachments = onSnapshot(attachmentsQuery, (snapshot) => {
                         const attachments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                         renderAttachmentsList(attachments, contractData.id);
                     });
+
+                    // NOVO: Listener para Trilha de Auditoria
+                    auditTrailSection.classList.remove('hidden');
+                    const auditTrailList = document.getElementById('audit-trail-list');
+                    auditTrailList.innerHTML = '<p class="text-xs text-gray-500">Carregando histórico...</p>';
+                    const auditTrailQuery = query(collection(db, `sharedContracts/${contractData.id}/auditTrail`), orderBy("timestamp", "desc"));
+                    unsubscribeFromAuditTrail = onSnapshot(auditTrailQuery, (snapshot) => {
+                        const auditLogs = snapshot.docs.map(doc => doc.data());
+                        renderAuditTrail(auditLogs);
+                    });
+
+                    // Lógica de ações e permissões
                     const statusSelect = form.querySelector('#status');
                     const modalActionsContainer = form.querySelector('#modal-actions-container');
                     modalActionsContainer.innerHTML = '';
                     statusSelect.disabled = true;
+                    
                     const createActionButton = (text, newStatus, colorClass) => {
                         const button = document.createElement('button');
                         button.type = 'button';
@@ -482,7 +527,11 @@
                                 { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
                                 { text: 'Confirmar', class: 'px-4 py-2 bg-blue-600 text-white rounded-md', onClick: async () => {
                                     try {
-                                        await updateDoc(doc(db, "sharedContracts", contractData.id), { status: newStatus, lastModifiedAt: serverTimestamp() });
+                                        await updateDoc(doc(db, "sharedContracts", contractData.id), { 
+                                            status: newStatus, 
+                                            lastModifiedAt: serverTimestamp(),
+                                            lastModifiedBy: { uid: currentUser.uid, email: currentUser.email }
+                                        });
                                         closeContractModal();
                                     } catch (err) {
                                         showAlert('Erro', 'Você não tem permissão para realizar esta ação.', [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
@@ -493,31 +542,25 @@
                         modalActionsContainer.appendChild(button);
                     };
                     
-                    const currentStatus = (contractData.status || '').trim().toLowerCase();
-                    const currentUserRole = (userRole || '').trim().toLowerCase();
+                    const currentStatus = (contractData.status || '').trim();
+                    const currentUserRole = (userRole || '').trim();
 
-                    // --- CONSOLE DEBUG ---
-                    console.log(`--- ABRINDO MODAL: ${contractData.title} ---`);
-                    console.log(`[Modal] Status visto: '${currentStatus}'`);
-                    console.log(`[Modal] Função do Usuário vista: '${currentUserRole}'`);
-                    console.log("-----------------------------------------");
-
-                    if (currentUserRole === 'valida documentos' && currentStatus === 'proposta registrada') {
+                    if (currentUserRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') {
                         createActionButton('Validar Documentação', 'Documentação Validada', 'bg-cyan-500 hover:bg-cyan-600');
                     }
-                    if (currentUserRole === 'valida pagamento' && currentStatus === 'documentação validada') {
+                    if (currentUserRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') {
                         createActionButton('Validar Pagamento', 'Pagamento Validado', 'bg-blue-500 hover:bg-blue-600');
                     }
-                    if (currentUserRole === 'valida assinatura' && currentStatus === 'pagamento validado') {
+                    if (currentUserRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') {
                         createActionButton('Validar para Assinatura', 'Pronta para Assinatura', 'bg-indigo-500 hover:bg-indigo-600');
                     }
-                    if (currentUserRole === 'assina minuta' && currentStatus === 'pronta para assinatura') {
+                    if (currentUserRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura') {
                         createActionButton('Assinar e Concluir', 'Contrato Assinado e Concluído', 'bg-green-500 hover:bg-green-600');
                     }
-                    if (currentUserRole === 'admin' || currentUserRole === 'presidente') {
+                    if (currentUserRole === 'admin' || currentUserRole === 'Presidente') {
                         statusSelect.disabled = false;
                     }
-                } else {
+                } else { // Modo 'add'
                     modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
                     form.querySelector('#contract-id').value = '';
                     attachmentsListDiv.innerHTML = '';
@@ -535,6 +578,7 @@
 
             function closeContractModal() {
                 if (unsubscribeFromAttachments) unsubscribeFromAttachments();
+                if (unsubscribeFromAuditTrail) unsubscribeFromAuditTrail();
                 const fileInput = document.getElementById('document-files');
                 fileInput.removeEventListener('change', renderStagedAttachments);
                 const installmentsNumberInput = document.getElementById('installments-number');
@@ -551,6 +595,7 @@
                 saveBtn.disabled = true;
                 saveBtnText.textContent = 'Salvando...';
                 saveSpinner.classList.remove('hidden');
+                
                 const id = form.querySelector('#contract-id').value;
                 const files = form.querySelector('#document-files').files;
                 const installmentsContainer = form.querySelector('#installments-container');
@@ -560,21 +605,23 @@
                 for (let i = 0; i < installmentDates.length; i++) {
                     installments.push({ date: installmentDates[i].value, value: parseFloat(installmentValues[i].value) || 0 });
                 }
+                
                 const contractData = {
                     title: form.querySelector('#title').value,
-                    party: form.querySelector('#party').value,
+                    contractedParty: form.querySelector('#party').value,
                     status: form.querySelector('#status').value,
                     service_type: form.querySelector('#service_type').value,
-                    cost_center: form.querySelector('#cost_center').value,
+                    costCenter: form.querySelector('#cost_center').value,
                     sector: form.querySelector('#sector').value,
                     startDate: form.querySelector('#start-date').value,
                     endDate: form.querySelector('#end-date').value,
-                    value: parseFloat(form.querySelector('#value').value) || 0,
+                    totalValue: parseFloat(form.querySelector('#value').value) || 0,
                     observations: form.querySelector('#observations').value,
                     lastModifiedAt: serverTimestamp(),
                     lastModifiedBy: { uid: currentUser.uid, email: currentUser.email },
                     installments: installments
                 };
+                
                 let currentContractId = id;
                 try {
                     if (id) {
@@ -585,6 +632,7 @@
                         const newDocRef = await addDoc(collection(db, "sharedContracts"), contractData);
                         currentContractId = newDocRef.id;
                     }
+                    
                     if (files.length > 0 && currentContractId) {
                         saveBtnText.textContent = `Enviando ${files.length} anexo(s)...`;
                         const uploadPromises = Array.from(files).map(file => {
@@ -621,11 +669,14 @@
                 const statusFilter = document.getElementById('filter-process-status').value;
                 const costCenterFilter = document.getElementById('filter-cost-center').value;
                 const sectorFilter = document.getElementById('filter-sector').value;
+                
                 const filteredContracts = allContracts.filter(contract => {
                     const statusMatch = statusFilter === 'all' || contract.status === statusFilter;
-                    const costCenterMatch = costCenterFilter === 'all' || contract.cost_center === costCenterFilter;
+                    const costCenterMatch = costCenterFilter === 'all' || contract.costCenter === costCenterFilter;
                     const sectorMatch = sectorFilter === 'all' || contract.sector === sectorFilter;
-                    const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || (contract.party && contract.party.toLowerCase().includes(searchTerm));
+                    const searchMatch = !searchTerm || 
+                                        (contract.title && contract.title.toLowerCase().includes(searchTerm)) || 
+                                        (contract.contractedParty && contract.contractedParty.toLowerCase().includes(searchTerm));
                     return statusMatch && costCenterMatch && sectorMatch && searchMatch;
                 });
                 renderContracts(filteredContracts);
@@ -649,13 +700,13 @@
                 
                 const processStatus = contract.status || 'Proposta Registrada';
                 const processStyle = PROCESS_STATUS_STYLES[processStatus] || PROCESS_STATUS_STYLES['Proposta Registrada'];
-                const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contract.value || 0);
+                const formattedValue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(contract.totalValue || 0);
                 const formattedStartDate = contract.startDate ? new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
                 const formattedEndDate = contract.endDate ? new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A';
                 const observationsHTML = contract.observations ? `<p class="mt-3 pt-3 border-t border-gray-100 text-sm text-gray-700 whitespace-pre-wrap"><i class="fas fa-comment-dots w-5 mr-1 text-gray-400"></i>${contract.observations}</p>` : '';
 
                 let installmentsHTML = '';
-                if (contract.installments && contract.installments.length > 0) {
+                if (contract.installments && contract.installments.length > 1) {
                      installmentsHTML = `
                          <div class="mt-4 pt-4 border-t border-gray-100">
                              <h4 class="text-sm font-semibold text-gray-600 mb-2">
@@ -673,25 +724,6 @@
                      `;
                 }
 
-                let attachmentsHTML = '';
-                if (contract.attachments && contract.attachments.length > 0) {
-                     attachmentsHTML = `
-                         <div class="mt-4 pt-4 border-t border-gray-100">
-                             <h4 class="text-sm font-semibold text-gray-600 mb-2">
-                                 <i class="fas fa-paperclip mr-1 text-gray-400"></i>Anexos:
-                             </h4>
-                             <div class="space-y-2">
-                                 ${contract.attachments.map(att => `
-                                     <a href="${att.documentURL}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-600 hover:underline text-sm p-1 rounded-md hover:bg-blue-50 transition-colors duration-200">
-                                         <i class="fas fa-file-pdf w-5 mr-2 text-red-500"></i>
-                                         <span class="truncate" title="${att.documentName}">${att.documentName}</span>
-                                     </a>
-                                 `).join('')}
-                             </div>
-                         </div>
-                     `;
-                }
-
                 card.innerHTML = `
                     <div>
                         <div class="flex justify-between items-start mb-2">
@@ -700,46 +732,45 @@
                                 <i class="fas ${processStyle.icon} mr-1"></i> ${processStatus}
                             </span>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">com <strong>${contract.party}</strong></p>
+                        <p class="text-sm text-gray-600 mb-4">com <strong>${contract.contractedParty}</strong></p>
                         <div class="space-y-3 text-sm text-gray-700">
                             <p><i class="fas fa-briefcase w-5 mr-1 text-gray-400"></i>Tipo: <strong>${contract.service_type || 'N/A'}</strong></p>
                             <p><i class="fas fa-building w-5 mr-1 text-gray-400"></i>Setor: <strong>${contract.sector || 'N/A'}</strong></p>
-                            <p><i class="fas fa-dollar-sign w-5 mr-1 text-gray-400"></i>C. Custo: <strong>${contract.cost_center || 'N/A'}</strong></p>
+                            <p><i class="fas fa-dollar-sign w-5 mr-1 text-gray-400"></i>C. Custo: <strong>${contract.costCenter || 'N/A'}</strong></p>
                             <p><i class="fas fa-calendar-alt w-5 mr-1 text-gray-400"></i>Vigência: ${formattedStartDate} a ${formattedEndDate}</p>
                             <p><i class="fas fa-coins w-5 mr-1 text-gray-400"></i>Valor: ${formattedValue}</p>
                         </div>
                         ${observationsHTML}
                         ${installmentsHTML}
-                        ${attachmentsHTML}
                     </div>
                 `;
                 
                 const actionsContainer = document.createElement('div');
                 actionsContainer.className = 'flex justify-end space-x-3 mt-5 pt-4 border-t border-gray-100';
 
-                const currentStatus = (contract.status || '').trim().toLowerCase();
-                const currentUserRole = (userRole || '').trim().toLowerCase();
+                const currentStatus = (contract.status || '').trim();
+                const currentUserRole = (userRole || '').trim();
 
                 const canManage = currentUserRole === 'admin' || 
-                                  currentUserRole === 'presidente' ||
-                                  (currentUserRole === 'registra proposta' && currentStatus === 'proposta registrada') ||
-                                  (currentUserRole === 'valida documentos' && currentStatus === 'proposta registrada') ||
-                                  (currentUserRole === 'valida pagamento' && currentStatus === 'documentação validada') ||
-                                  (currentUserRole === 'valida assinatura' && currentStatus === 'pagamento validado') ||
-                                  (currentUserRole === 'assina minuta' && currentStatus === 'pronta para assinatura');
+                                  currentUserRole === 'Presidente' ||
+                                  (currentUserRole === 'Registra Proposta' && currentStatus === 'Proposta Registrada') ||
+                                  (currentUserRole === 'Valida Documentos' && currentStatus === 'Proposta Registrada') ||
+                                  (currentUserRole === 'Valida Pagamento' && currentStatus === 'Documentação Validada') ||
+                                  (currentUserRole === 'Valida Assinatura' && currentStatus === 'Pagamento Validado') ||
+                                  (currentUserRole === 'Assina Minuta' && currentStatus === 'Pronta para Assinatura');
                                   
                 if (canManage) {
                     const editButton = document.createElement('button');
                     editButton.innerHTML = `<i class="fas fa-pencil-alt mr-1"></i>Gerenciar / Avançar`;
-                    editButton.className = "text-gray-500 hover:text-blue-600 transition-colors text-sm";
+                    editButton.className = "text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium";
                     editButton.onclick = () => openContractModal('edit', contract);
                     actionsContainer.appendChild(editButton);
                 }
 
-                if (currentUserRole === 'admin' || currentUserRole === 'presidente') {
+                if (currentUserRole === 'admin' || currentUserRole === 'Presidente') {
                     const deleteButton = document.createElement('button');
                     deleteButton.innerHTML = `<i class="fas fa-trash-alt mr-1"></i>Deletar`;
-                    deleteButton.className = "text-gray-500 hover:text-red-600 transition-colors text-sm";
+                    deleteButton.className = "text-gray-500 hover:text-red-600 transition-colors text-sm font-medium";
                     deleteButton.onclick = () => deleteContract(contract);
                     actionsContainer.appendChild(deleteButton);
                 }
@@ -752,11 +783,11 @@
                 const container = document.getElementById('installments-container');
                 const number = document.getElementById('installments-number').valueAsNumber || 1;
                 container.innerHTML = '';
-                if (number > 0) {
+                if (number > 1) { // Só mostra se for mais de 1 parcela
                     const title = document.createElement('h4');
                     title.className = 'text-md font-semibold text-gray-700 border-t pt-4 md:col-span-2';
                     title.textContent = 'Detalhes das Parcelas';
-                    if(number > 1) container.appendChild(title);
+                    container.appendChild(title);
                     for (let i = 0; i < number; i++) {
                         const installmentData = existingInstallments[i] || {};
                         const fieldSet = document.createElement('div');
@@ -809,7 +840,7 @@
                 attachmentsListDiv.innerHTML = attachments.map(att => `
                     <div class="flex items-center justify-between bg-gray-50 p-2 rounded-md">
                         <a href="${att.documentURL}" target="_blank" class="text-blue-600 hover:underline text-sm truncate pr-2" title="${att.documentName}">
-                            <i class="fas fa-file-pdf mr-1"></i>
+                            <i class="fas fa-file-pdf mr-1 text-red-500"></i>
                             ${att.documentName}
                         </a>
                         <button type="button" data-contract-id="${contractId}" data-attachment-id="${att.id}" data-storage-path="${att.storagePath}" data-document-name="${att.documentName}" class="attachment-delete-btn text-gray-400 hover:text-red-600 transition-colors">
@@ -830,7 +861,8 @@
                     { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
                     { text: 'Deletar Anexo', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
                         try {
-                            await callHttpsFunction('deleteFile', { contractId, attachmentId, storagePath });
+                            // A função 'deleteFile' no backend já cria um log de auditoria.
+                            await callHttpsFunction('deleteFile', { contractId, attachmentId, storagePath, fileName: documentName });
                         } catch (error) {
                             showAlert('Erro', `Não foi possível deletar o anexo: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
                         }
@@ -838,22 +870,14 @@
                 ]);
             }
 
-            async function deleteContract(contract) {
-                const attachmentsCollectionRef = collection(db, `sharedContracts/${contract.id}/anexos`);
-                const attachmentsSnapshot = await getDocs(attachmentsCollectionRef);
-                showAlert('Confirmar Deleção', `Deletar o contrato "${contract.title}"? Todos os ${attachmentsSnapshot.size} anexos também serão deletados. Esta ação não pode ser desfeita.`, [
+            // NOVO: Função de deleção que chama a Cloud Function segura
+            function deleteContract(contract) {
+                showAlert('Confirmar Deleção', `Deletar o contrato "${contract.title}"? Esta ação irá ARQUIVAR todo o histórico e então apagar o registro. A ação não pode ser desfeita.`, [
                     { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
-                    { text: 'Deletar Contrato', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
+                    { text: 'Deletar e Arquivar', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
                         try {
-                            if (!attachmentsSnapshot.empty) {
-                                const deletePromises = attachmentsSnapshot.docs.map(docSnapshot => {
-                                    const att = docSnapshot.data();
-                                    return callHttpsFunction('deleteFile', { contractId: contract.id, attachmentId: docSnapshot.id, storagePath: att.storagePath });
-                                });
-                                await Promise.all(deletePromises);
-                            }
-                            await deleteDoc(doc(db, "sharedContracts", contract.id));
-                            showAlert('Sucesso', 'O contrato e seus anexos foram deletados.', [{ text: 'OK', class: 'px-4 py-2 bg-blue-500 text-white rounded-md' }]);
+                            await callHttpsFunction('deleteContractAndLog', { contractId: contract.id });
+                            showAlert('Sucesso', 'O contrato foi deletado e arquivado com sucesso.', [{ text: 'OK', class: 'px-4 py-2 bg-blue-500 text-white rounded-md' }]);
                         } catch (error) {
                             showAlert('Erro', `Não foi possível deletar o contrato: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
                         }
@@ -861,29 +885,61 @@
                 ]);
             }
 
+            // NOVO: Função para renderizar a trilha de auditoria
+            function renderAuditTrail(logs) {
+                const listEl = document.getElementById('audit-trail-list');
+                if (!logs || logs.length === 0) {
+                    listEl.innerHTML = '<p class="text-sm text-gray-500">Nenhum histórico de alterações encontrado.</p>';
+                    return;
+                }
+                listEl.innerHTML = logs.map(log => {
+                    const timestamp = log.timestamp ? log.timestamp.toDate() : new Date();
+                    const formattedDate = timestamp.toLocaleDateString('pt-BR');
+                    const formattedTime = timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                    return `
+                        <div class="flex items-start text-sm">
+                            <div class="mr-3 text-center flex-shrink-0">
+                                <i class="fas fa-history text-gray-400"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="font-semibold text-gray-700">${log.action}</p>
+                                <p class="text-gray-600">${log.details}</p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    Por: ${log.user.email} em ${formattedDate} às ${formattedTime}
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                }).join('<hr class="my-2 border-gray-200">');
+            }
+
             function generatePDFReport() {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ orientation: 'landscape' });
                 const tableColumn = ["Título", "Parte Contratada", "Status", "Tipo de Serviço", "C. Custo", "Setor", "Início", "Término", "Valor (R$)", "Observações"];
                 const tableRows = [];
+                
                 const filteredContracts = allContracts.filter(contract => {
                     const statusMatch = document.getElementById('filter-process-status').value === 'all' || contract.status === document.getElementById('filter-process-status').value;
-                    const costCenterMatch = document.getElementById('filter-cost-center').value === 'all' || contract.cost_center === document.getElementById('filter-cost-center').value;
+                    const costCenterMatch = document.getElementById('filter-cost-center').value === 'all' || contract.costCenter === document.getElementById('filter-cost-center').value;
                     const sectorMatch = document.getElementById('filter-sector').value === 'all' || contract.sector === document.getElementById('filter-sector').value;
                     const searchTerm = document.getElementById('search-input').value.toLowerCase();
-                    const searchMatch = !searchTerm || contract.title.toLowerCase().includes(searchTerm) || (contract.party && contract.party.toLowerCase().includes(searchTerm));
+                    const searchMatch = !searchTerm || (contract.title && contract.title.toLowerCase().includes(searchTerm)) || (contract.contractedParty && contract.contractedParty.toLowerCase().includes(searchTerm));
                     return statusMatch && costCenterMatch && sectorMatch && searchMatch;
                 });
+                
                 filteredContracts.forEach(contract => {
                     tableRows.push([
-                        contract.title, contract.party, contract.status || 'N/A',
-                        contract.service_type || '', contract.cost_center || '', contract.sector || '',
-                        new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR'),
-                        new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR'),
-                        new Intl.NumberFormat('pt-BR').format(contract.value || 0),
+                        contract.title, contract.contractedParty, contract.status || 'N/A',
+                        contract.service_type || '', contract.costCenter || '', contract.sector || '',
+                        contract.startDate ? new Date(contract.startDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A',
+                        contract.endDate ? new Date(contract.endDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'N/A',
+                        new Intl.NumberFormat('pt-BR').format(contract.totalValue || 0),
                         contract.observations || ''
                     ]);
                 });
+                
                 doc.autoTable({ head: [tableColumn], body: tableRows, startY: 20, theme: 'grid', styles: { fontSize: 8 }, headStyles: { fillColor: [22, 160, 133] } });
                 doc.save("relatorio-contratos.pdf");
             }
