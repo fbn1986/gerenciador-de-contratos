@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -226,10 +225,6 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             
-            // *******************************************************************
-            // ** CORREÇÃO AQUI: Cole as configurações do seu projeto Firebase. **
-            // *******************************************************************
-            // Você pode encontrar isso nas Configurações do Projeto no console do Firebase.
             const firebaseConfig = {
               apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
               authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
@@ -248,7 +243,7 @@
             let allContracts = [];
             let unsubscribeFromContracts = null;
             let unsubscribeFromAttachments = null;
-            let unsubscribeFromAuditTrail = null; // Novo listener para auditoria
+            let unsubscribeFromAuditTrail = null; 
             let appListenersInitialized = false;
 
             const PROCESS_STATUS_STYLES = {
@@ -385,8 +380,19 @@
                 document.getElementById('create-user-form').addEventListener('submit', handleCreateUserFormSubmit);
                 
                 const contractsQuery = query(collection(db, "sharedContracts"), orderBy("lastModifiedAt", "desc"));
-                unsubscribeFromContracts = onSnapshot(contractsQuery, (snapshot) => {
-                    allContracts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // *** ALTERAÇÃO AQUI: Carrega contratos e seus anexos juntos ***
+                unsubscribeFromContracts = onSnapshot(contractsQuery, async (snapshot) => {
+                    const contractsFromDB = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    
+                    // Para cada contrato, busca os seus anexos
+                    allContracts = await Promise.all(contractsFromDB.map(async (contract) => {
+                        const attachmentsQuery = query(collection(db, `sharedContracts/${contract.id}/anexos`), orderBy("uploadedAt"));
+                        const attachmentsSnapshot = await getDocs(attachmentsQuery);
+                        const attachments = attachmentsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        return { ...contract, attachments }; // Adiciona os anexos ao objeto do contrato
+                    }));
+
                     applyFiltersAndRender();
                     document.getElementById('loading-message').style.display = 'none';
                 }, (error) => {
@@ -464,11 +470,9 @@
                 const installmentsNumberInput = form.querySelector('#installments-number');
                 installmentsNumberInput.addEventListener('change', () => generateInstallmentFields());
                 
-                // Limpa listeners antigos
                 if (unsubscribeFromAttachments) unsubscribeFromAttachments();
                 if (unsubscribeFromAuditTrail) unsubscribeFromAuditTrail();
 
-                // Esconde a seção de auditoria por padrão
                 const auditTrailSection = document.getElementById('audit-trail-section');
                 auditTrailSection.classList.add('hidden');
 
@@ -476,14 +480,14 @@
                     modal.querySelector('#modal-title').textContent = 'Gerenciar Contrato';
                     form.querySelector('#contract-id').value = contractData.id;
                     form.querySelector('#title').value = contractData.title || '';
-                    form.querySelector('#party').value = contractData.contractedParty || ''; // Corrigido de 'party' para 'contractedParty'
+                    form.querySelector('#party').value = contractData.contractedParty || '';
                     form.querySelector('#status').value = contractData.status || 'Proposta Registrada';
                     form.querySelector('#service_type').value = contractData.service_type || '';
-                    form.querySelector('#cost_center').value = contractData.costCenter || 'Institucional'; // Corrigido
+                    form.querySelector('#cost_center').value = contractData.costCenter || 'Institucional';
                     form.querySelector('#sector').value = contractData.sector || 'RH';
                     form.querySelector('#start-date').value = contractData.startDate || '';
                     form.querySelector('#end-date').value = contractData.endDate || '';
-                    form.querySelector('#value').value = contractData.totalValue || 0; // Corrigido
+                    form.querySelector('#value').value = contractData.totalValue || 0;
                     form.querySelector('#observations').value = contractData.observations || '';
                     fileInput.disabled = false;
                     
@@ -495,7 +499,6 @@
                         generateInstallmentFields();
                     }
                     
-                    // Listener para Anexos
                     attachmentsListDiv.innerHTML = '<p class="text-xs text-gray-500">Carregando anexos...</p>';
                     const attachmentsQuery = query(collection(db, `sharedContracts/${contractData.id}/anexos`), orderBy("uploadedAt", "desc"));
                     unsubscribeFromAttachments = onSnapshot(attachmentsQuery, (snapshot) => {
@@ -503,7 +506,6 @@
                         renderAttachmentsList(attachments, contractData.id);
                     });
 
-                    // NOVO: Listener para Trilha de Auditoria
                     auditTrailSection.classList.remove('hidden');
                     const auditTrailList = document.getElementById('audit-trail-list');
                     auditTrailList.innerHTML = '<p class="text-xs text-gray-500">Carregando histórico...</p>';
@@ -513,7 +515,6 @@
                         renderAuditTrail(auditLogs);
                     });
 
-                    // Lógica de ações e permissões
                     const statusSelect = form.querySelector('#status');
                     const modalActionsContainer = form.querySelector('#modal-actions-container');
                     modalActionsContainer.innerHTML = '';
@@ -562,7 +563,7 @@
                     if (currentUserRole === 'admin' || currentUserRole === 'Presidente') {
                         statusSelect.disabled = false;
                     }
-                } else { // Modo 'add'
+                } else { 
                     modal.querySelector('#modal-title').textContent = 'Adicionar Novo Contrato';
                     form.querySelector('#contract-id').value = '';
                     attachmentsListDiv.innerHTML = '';
@@ -726,6 +727,26 @@
                      `;
                 }
 
+                // *** ALTERAÇÃO AQUI: Cria a seção de anexos para o card ***
+                let attachmentsHTML = '';
+                if (contract.attachments && contract.attachments.length > 0) {
+                     attachmentsHTML = `
+                         <div class="mt-4 pt-4 border-t border-gray-100">
+                             <h4 class="text-sm font-semibold text-gray-600 mb-2">
+                                 <i class="fas fa-paperclip mr-1 text-gray-400"></i>Anexos:
+                             </h4>
+                             <div class="space-y-2">
+                                 ${contract.attachments.map(att => `
+                                     <a href="${att.documentURL}" target="_blank" rel="noopener noreferrer" class="flex items-center text-blue-600 hover:underline text-sm p-1 rounded-md hover:bg-blue-50 transition-colors duration-200">
+                                         <i class="fas fa-file-pdf w-5 mr-2 text-red-500"></i>
+                                         <span class="truncate" title="${att.documentName}">${att.documentName}</span>
+                                     </a>
+                                 `).join('')}
+                             </div>
+                         </div>
+                     `;
+                }
+
                 card.innerHTML = `
                     <div>
                         <div class="flex justify-between items-start mb-2">
@@ -744,6 +765,7 @@
                         </div>
                         ${observationsHTML}
                         ${installmentsHTML}
+                        ${attachmentsHTML} 
                     </div>
                 `;
                 
@@ -785,7 +807,7 @@
                 const container = document.getElementById('installments-container');
                 const number = document.getElementById('installments-number').valueAsNumber || 1;
                 container.innerHTML = '';
-                if (number > 1) { // Só mostra se for mais de 1 parcela
+                if (number > 1) { 
                     const title = document.createElement('h4');
                     title.className = 'text-md font-semibold text-gray-700 border-t pt-4 md:col-span-2';
                     title.textContent = 'Detalhes das Parcelas';
@@ -863,7 +885,6 @@
                     { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
                     { text: 'Deletar Anexo', class: 'px-4 py-2 bg-red-600 text-white rounded-md', onClick: async () => {
                         try {
-                            // A função 'deleteFile' no backend já cria um log de auditoria.
                             await callHttpsFunction('deleteFile', { contractId, attachmentId, storagePath, fileName: documentName });
                         } catch (error) {
                             showAlert('Erro', `Não foi possível deletar o anexo: ${error.message}`, [{ text: 'OK', class: 'px-4 py-2 bg-red-500 text-white rounded-md' }]);
@@ -872,7 +893,6 @@
                 ]);
             }
 
-            // NOVO: Função de deleção que chama a Cloud Function segura
             function deleteContract(contract) {
                 showAlert('Confirmar Deleção', `Deletar o contrato "${contract.title}"? Esta ação irá ARQUIVAR todo o histórico e então apagar o registro. A ação não pode ser desfeita.`, [
                     { text: 'Cancelar', class: 'px-4 py-2 bg-gray-200 text-gray-700 rounded-md' },
@@ -887,7 +907,6 @@
                 ]);
             }
 
-            // NOVO: Função para renderizar a trilha de auditoria
             function renderAuditTrail(logs) {
                 const listEl = document.getElementById('audit-trail-list');
                 if (!logs || logs.length === 0) {
@@ -946,10 +965,9 @@
                 doc.save("relatorio-contratos.pdf");
             }
             
-            // --- PONTO DE PARTIDA DA APLICAÇÃO ---
             setupAuthListeners();
 
-        }); // Fim do DOMContentLoaded
+        }); 
     </script>
 </body>
 </html>
