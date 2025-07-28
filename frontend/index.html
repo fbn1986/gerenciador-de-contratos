@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -225,17 +226,19 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             
-            // IMPORTANTE: Suas chaves de API do Firebase não devem ficar aqui.
-            // Use variáveis de ambiente no seu serviço de hospedagem (Netlify, Vercel, etc.)
-            // para manter estas informações seguras.
+            // *******************************************************************
+            // ** CORREÇÃO AQUI: Cole as configurações do seu projeto Firebase. **
+            // *******************************************************************
+            // Você pode encontrar isso nas Configurações do Projeto no console do Firebase.
             const firebaseConfig = {
-                apiKey: "SUA_API_KEY", // Substitua por variável de ambiente
-                authDomain: "SEU_AUTH_DOMAIN", // Substitua por variável de ambiente
-                projectId: "SEU_PROJECT_ID", // Substitua por variável de ambiente
-                storageBucket: "SEU_STORAGE_BUCKET", // Substitua por variável de ambiente
-                messagingSenderId: "SEU_MESSAGING_SENDER_ID", // Substitua por variável de ambiente
-                appId: "SUA_APP_ID" // Substitua por variável de ambiente
+              apiKey: "AIzaSyDY3qxKdbwBk56-cgB1TezEc9LSVqkdnAs",
+              authDomain: "gerenciador-de-contratos-cbc47.firebaseapp.com",
+              projectId: "gerenciador-de-contratos-cbc47",
+              storageBucket: "gerenciador-de-contratos-cbc47.appspot.com",
+              messagingSenderId: "544353319340",
+              appId: "1:544353319340:web:070ac470eac63241f36209"
             };
+
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const db = getFirestore(app);
@@ -259,7 +262,6 @@
             async function callHttpsFunction(functionName, payload, region = 'southamerica-east1') {
                 if (!currentUser) throw new Error("Usuário não autenticado.");
                 const token = await currentUser.getIdToken(true);
-                // ATENÇÃO: O Project ID deve ser o mesmo da sua configuração do Firebase.
                 const projectId = firebaseConfig.projectId; 
                 const url = `https://${region}-${projectId}.cloudfunctions.net/${functionName}`;
                 const response = await fetch(url, {
